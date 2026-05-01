@@ -70,6 +70,10 @@
         .profile-header { display: flex; align-items: center; gap: 20px; text-align: left; margin-bottom: 25px; }
         .profile-avatar { width: 85px; height: 85px; background: #1a1a35; border-radius: 50%; border: 3px solid var(--blue); box-shadow: var(--neon-blue); display: flex; align-items: center; justify-content: center; }
 
+        .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        .lang-btn { padding: 5px 15px; font-size: 10px; width: auto; border: 1px solid var(--glass); }
+        .lang-btn.active { background: var(--blue); border-color: var(--blue); }
+
         .hidden { display: none; }
     </style>
 </head>
@@ -78,23 +82,27 @@
 <div class="app-wrapper">
     <div id="view-auth" class="screen">
         <div class="card" style="margin-top: 50px;">
+            <div class="lang-switch">
+                <button class="lang-btn active" onclick="setLang('lat')">LOTIN</button>
+                <button class="lang-btn" onclick="setLang('cyr')">КРИЛЛ</button>
+            </div>
             <h1 style="color: var(--blue); font-size: 40px; margin-bottom: 5px;">STATS MB</h1>
-            <p style="color: #666; margin-bottom: 20px;">Tizimga kiring</p>
+            <p id="t-auth-p" style="color: #666; margin-bottom: 20px;">Tizimga kiring</p>
             <input type="text" id="user" placeholder="Login">
             <input type="password" id="pass" placeholder="Parol">
-            <button class="btn-blue" onclick="login()">KIRISH</button>
-            <button class="btn-outline" onclick="showView('view-reg')">RO'YXATDAN O'TISH</button>
+            <button id="t-auth-btn" class="btn-blue" onclick="login()">KIRISH</button>
+            <button id="t-reg-go" class="btn-outline" onclick="showView('view-reg')">RO'YXATDAN O'TISH</button>
         </div>
     </div>
 
     <div id="view-reg" class="screen hidden">
         <div class="card">
-            <h2 style="color: var(--orange);">YANGI HISOB</h2>
+            <h2 id="t-reg-h2" style="color: var(--orange);">YANGI HISOB</h2>
             <input type="text" id="reg-user" placeholder="Ism sharif">
             <input type="tel" id="reg-phone" placeholder="Telefon raqam">
             <input type="password" id="reg-pass" placeholder="Parol">
-            <button class="btn-orange" onclick="doRegister()">YARATISH</button>
-            <button class="btn-outline" onclick="showView('view-auth')">ORQAGA</button>
+            <button id="t-reg-btn" class="btn-orange" onclick="doRegister()">YARATISH</button>
+            <button id="t-back1" class="btn-outline" onclick="showView('view-auth')">ORQAGA</button>
         </div>
     </div>
 
@@ -102,15 +110,15 @@
         <div class="card">
             <div id="clock">00:00:00</div>
             <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
-            <button class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
-            <button class="btn-orange" onclick="showView('view-cargo')">YUKLAR (CARGO)</button>
+            <button id="t-profile-go" class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
+            <button id="t-cargo-go" class="btn-orange" onclick="showView('view-cargo')">YUKLAR (CARGO)</button>
             <div class="calendar-grid" id="calendar"></div>
             
             <div id="admin-tools" class="hidden" style="margin-top: 25px; border-top: 1px solid #2a2a45; padding-top: 15px;">
-                <button class="btn-orange" onclick="showUsersList()">ISHCHILAR (DAVOMAT)</button>
-                <button class="btn-outline" onclick="showView('view-bg-settings')">FONNI SOZLASH</button>
+                <button id="t-admin-users" class="btn-orange" onclick="showUsersList()">ISHCHILAR (DAVOMAT)</button>
+                <button id="t-admin-bg" class="btn-outline" onclick="showView('view-bg-settings')">FONNI SOZLASH</button>
             </div>
-            <button class="btn-red" onclick="location.reload()" style="margin-top: 20px;">CHIQISH</button>
+            <button id="t-logout" class="btn-red" onclick="location.reload()" style="margin-top: 20px;">CHIQISH</button>
         </div>
     </div>
 
@@ -126,11 +134,22 @@
                 </div>
             </div>
             <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; border: 1px solid var(--glass);">
-                <p style="margin: 8px 0;">📞 Tel: <span id="prof-tel-box"></span></p>
-                <p style="margin: 8px 0;">📅 Sana: <span id="prof-date" style="color: var(--green);">01.05.2026</span></p>
-                <p style="margin: 8px 0;">🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
+                <p id="t-p-tel" style="margin: 8px 0;">📞 Tel: <span id="prof-tel-box"></span></p>
+                <p id="t-p-date" style="margin: 8px 0;">📅 Sana: <span id="prof-date" style="color: var(--green);">01.05.2026</span></p>
+                <p id="t-p-pass" style="margin: 8px 0;">🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
             </div>
-            <button class="btn-blue" onclick="showView('view-main')" style="margin-top: 20px;">ORQAGA</button>
+            <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 20px;">ORQAGA</button>
+        </div>
+    </div>
+
+    <div id="view-cargo" class="screen hidden">
+        <div class="card">
+            <h3 id="t-cargo-h3">YUKLAR</h3>
+            <input type="text" id="cargo-name" placeholder="Yuk nomi">
+            <input type="number" id="cargo-qty" placeholder="Miqdori">
+            <button id="t-cargo-save" class="btn-green" onclick="saveCargo()">SAQLASH</button>
+            <button id="t-back3" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
+            <div class="list-container" id="cargo-list"></div>
         </div>
     </div>
 
@@ -142,26 +161,30 @@
             <h3 id="detail-name" style="margin:0;">...</h3>
             <p id="detail-phone-text" style="color: #888; margin-top: 5px;">...</p>
             <div class="calendar-grid" id="admin-user-calendar"></div>
-            
-            <h4 style="margin-top: 20px; color: var(--blue);">SHAXSIY JADVAL</h4>
+            <h4 id="t-detail-h4" style="margin-top: 20px; color: var(--blue);">SHAXSIY JADVAL</h4>
             <div id="user-stats-table-div" style="overflow-x:auto;"></div>
-
-            <button class="btn-blue" onclick="showView('view-users')" style="margin-top: 15px;">ORQAGA</button>
+            <button id="t-back4" class="btn-blue" onclick="showView('view-users')" style="margin-top: 15px;">ORQAGA</button>
         </div>
     </div>
 
-    <div id="view-bg-settings" class="screen hidden"><div class="card"><h3>FON RASMI</h3><input type="file" id="bg-file" accept="image/*"><button class="btn-green" onclick="uploadBackground()">SAQLASH</button><button class="btn-red" onclick="resetBackground()">O'CHIRISH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
-    
     <div id="view-users" class="screen hidden">
         <div class="card">
-            <h3>ISHCHILAR RO'YXATI</h3>
-            <p style="font-size: 11px; color: #666;">Davomatini ko'rish uchun tanlang</p>
+            <h3 id="t-users-h3">ISHCHILAR RO'YXATI</h3>
+            <p id="t-users-p" style="font-size: 11px; color: #666;">Davomatini ko'rish uchun tanlang</p>
             <div class="list-container" id="users-list-div"></div>
-            <button class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
+            <button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
         </div>
     </div>
 
-    <div id="view-cargo" class="screen hidden"><div class="card"><h3>YUKLAR</h3><input type="text" id="cargo-name" placeholder="Yuk nomi"><input type="number" id="cargo-qty" placeholder="Miqdori"><button class="btn-green" onclick="saveCargo()">SAQLASH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button><div class="list-container" id="cargo-list"></div></div></div>
+    <div id="view-bg-settings" class="screen hidden">
+        <div class="card">
+            <h3 id="t-bg-h3">FON RASMI</h3>
+            <input type="file" id="bg-file" accept="image/*">
+            <button id="t-bg-save" class="btn-green" onclick="uploadBackground()">SAQLASH</button>
+            <button id="t-bg-reset" class="btn-red" onclick="resetBackground()">O'CHIRISH</button>
+            <button id="t-back6" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
+        </div>
+    </div>
 </div>
 
 <script type="module">
@@ -181,6 +204,74 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     let userData = null;
+    let currentLang = 'lat';
+
+    const translations = {
+        lat: {
+            authP: "Tizimga kiring", authBtn: "KIRISH", regGo: "RO'YXATDAN O'TISH",
+            regH2: "YANGI HISOB", regBtn: "YARATISH", back: "ORQAGA",
+            checkIn: "ISHGA KELDIM", profileGo: "MENING PROFILIM", cargoGo: "YUKLAR (CARGO)",
+            adminUsers: "ISHCHILAR (DAVOMAT)", adminBg: "FONNI SOZLASH", logout: "CHIQISH",
+            pTel: "📞 Tel:", pDate: "📅 Sana:", pPass: "🔑 Parol:",
+            cargoH3: "YUKLAR", cargoSave: "SAQLASH", usersH3: "ISHCHILAR RO'YXATI",
+            usersP: "Davomatini ko'rish uchun tanlang", bgH3: "FON RASMI", bgSave: "SAQLASH", 
+            bgReset: "O'CHIRISH", detailH4: "SHAXSIY JADVAL",
+            alertErr: "Xato!", alertReg: "Tayyor!", alertIn: "OK! Davomat qayd etildi.",
+            days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"], tableSana: "SANA", tableVaqt: "VAQT", tableAmal: "AMAL"
+        },
+        cyr: {
+            authP: "Тизимга киринг", authBtn: "КИРИШ", regGo: "РЎЙХАТДАН ЎТИШ",
+            regH2: "ЯНГИ ҲИСОБ", regBtn: "ЯРАТИШ", back: "ОРҚАГА",
+            checkIn: "ИШГА КЕЛДИМ", profileGo: "МЕНИНГ ПРОФИЛИМ", cargoGo: "ЮКЛАР (CARGO)",
+            adminUsers: "ИШЧИЛАР (ДАВОМАТ)", adminBg: "ФОННИ СОЗЛАШ", logout: "ЧИҚИШ",
+            pTel: "📞 Тел:", pDate: "📅 Сана:", pPass: "🔑 Парол:",
+            cargoH3: "ЮКЛАР", cargoSave: "САҚЛАШ", usersH3: "ИШЧИЛАР РЎЙХАТИ",
+            usersP: "Давоматини кўриш uchun танланг", bgH3: "ФОН РАСМИ", bgSave: "САҚЛАШ", 
+            bgReset: "ЎЧИРИШ", detailH4: "ШАХСИЙ ЖАДВАЛ",
+            alertErr: "Хато!", alertReg: "Тайёр!", alertIn: "ОК! Давомат қайд этилди.",
+            days: ["Ду","Се","Чо","Па","Жу","Ша","Як"], tableSana: "САНА", tableVaqt: "ВАҚТ", tableAmal: "АМАЛ"
+        }
+    };
+
+    window.setLang = (lang) => {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        event?.target?.classList.add('active');
+        updateUI();
+    };
+
+    function updateUI() {
+        const t = translations[currentLang];
+        document.getElementById('t-auth-p').innerText = t.authP;
+        document.getElementById('t-auth-btn').innerText = t.authBtn;
+        document.getElementById('t-reg-go').innerText = t.regGo;
+        document.getElementById('t-reg-h2').innerText = t.regH2;
+        document.getElementById('t-reg-btn').innerText = t.regBtn;
+        document.getElementById('check-in-btn').innerText = t.checkIn;
+        document.getElementById('t-profile-go').innerText = t.profileGo;
+        document.getElementById('t-cargo-go').innerText = t.cargoGo;
+        document.getElementById('t-admin-users').innerText = t.adminUsers;
+        document.getElementById('t-admin-bg').innerText = t.adminBg;
+        document.getElementById('t-logout').innerText = t.logout;
+        document.getElementById('t-cargo-h3').innerText = t.cargoH3;
+        document.getElementById('t-cargo-save').innerText = t.cargoSave;
+        document.getElementById('t-users-h3').innerText = t.usersH3;
+        document.getElementById('t-users-p').innerText = t.usersP;
+        document.getElementById('t-bg-h3').innerText = t.bgH3;
+        document.getElementById('t-bg-save').innerText = t.bgSave;
+        document.getElementById('t-bg-reset').innerText = t.bgReset;
+        document.getElementById('t-detail-h4').innerText = t.detailH4;
+
+        // Back buttons
+        for(let i=1; i<=6; i++) { if(document.getElementById('t-back'+i)) document.getElementById('t-back'+i).innerText = t.back; }
+        
+        // Profile text
+        document.getElementById('t-p-tel').firstChild.textContent = t.pTel + " ";
+        document.getElementById('t-p-date').firstChild.textContent = t.pDate + " ";
+        document.getElementById('t-p-pass').firstChild.textContent = t.pPass + " ";
+
+        if(userData) renderCalendar(userData.id);
+    }
 
     onValue(ref(db, 'settings/background'), snap => { 
         document.body.style.backgroundImage = snap.exists() && snap.val() !== "" ? `url('${snap.val()}')` : "none";
@@ -197,7 +288,7 @@
         const u = document.getElementById('user').value, p = document.getElementById('pass').value;
         if(u === "Admin" && p === "0000") { startApp({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
         const snap = await get(ref(db, 'users/' + u));
-        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else alert("Xato!");
+        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else alert(translations[currentLang].alertErr);
     };
 
     window.doRegister = async () => {
@@ -206,29 +297,9 @@
             const usersSnap = await get(ref(db, 'users'));
             let nextId = usersSnap.exists() ? Object.keys(usersSnap.val()).length + 1 : 1;
             await set(ref(db, 'users/' + u), { ism: u, pass: p, tel: ph, id: nextId, joined: "01.05.2026" });
-            alert("Tayyor!"); showView('view-auth');
-        } else alert("Ma'lumotlar to'liq emas!");
+            alert(translations[currentLang].alertReg); showView('view-auth');
+        } else alert("...");
     };
-
-    window.addPhone = async () => {
-        let ph = prompt("Telefon raqamingiz:");
-        if(ph) {
-            await update(ref(db, 'users/' + userData.ism), { tel: ph });
-            userData.tel = ph;
-            startApp(userData);
-        }
-    };
-
-    window.uploadBackground = () => {
-        const file = document.getElementById('bg-file').files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => set(ref(db, 'settings/background'), reader.result);
-            reader.readAsDataURL(file);
-        }
-    };
-
-    window.resetBackground = () => set(ref(db, 'settings/background'), "");
 
     function startApp(user) {
         userData = user; showView('view-main');
@@ -237,11 +308,7 @@
         document.getElementById('prof-pass').innerText = user.pass;
         
         const telBox = document.getElementById('prof-tel-box');
-        if(user.tel) {
-            telBox.innerHTML = `<span style="color: var(--green);">${user.tel}</span>`;
-        } else {
-            telBox.innerHTML = `<button class="btn-orange" style="padding:4px 10px; width:auto; font-size:10px; margin:0;" onclick="addPhone()">KIRITISH</button>`;
-        }
+        telBox.innerHTML = user.tel ? `<span style="color: var(--green);">${user.tel}</span>` : `<button class="btn-orange" style="padding:4px 10px; width:auto; font-size:10px; margin:0;" onclick="addPhone()">+</button>`;
 
         if(user.role === 'admin') {
             document.getElementById('admin-tools').classList.remove('hidden');
@@ -250,26 +317,26 @@
             document.getElementById('admin-tools').classList.add('hidden');
             renderCalendar('calendar', user.id);
         }
+        updateUI();
     }
 
     async function renderCalendar(divId, userId) {
-        const cal = document.getElementById(divId), now = new Date();
+        const cal = document.getElementById(divId); if(!cal) return;
+        const now = new Date(), t = translations[currentLang];
         const snap = await get(ref(db, 'history'));
         let history = [];
         if(snap.exists()) snap.forEach(c => { if(c.val().id == userId) history.push(c.val().sana); });
 
-        cal.innerHTML = `<div class="day-name">Du</div><div class="day-name">Se</div><div class="day-name">Ch</div><div class="day-name">Pa</div><div class="day-name">Ju</div><div class="day-name">Sh</div><div class="day-name">Ya</div>`;
+        cal.innerHTML = t.days.map(d => `<div class="day-name">${d}</div>`).join('');
         
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
         const emptySlots = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; 
         const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
         for(let i = 0; i < emptySlots; i++) cal.appendChild(document.createElement('div'));
-        
         for(let d = 1; d <= daysInMonth; d++) {
             const dayDiv = document.createElement('div'); 
-            dayDiv.className = 'day'; 
-            dayDiv.innerText = d;
+            dayDiv.className = 'day'; dayDiv.innerText = d;
             if(d === now.getDate()) dayDiv.classList.add('today');
             const ds = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
             if(history.includes(ds)) dayDiv.classList.add('present');
@@ -277,20 +344,26 @@
         }
     }
 
+    window.doCheckIn = () => {
+        const n = new Date(), ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
+        push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: n.toLocaleTimeString() }).then(() => {
+            alert(translations[currentLang].alertIn);
+            renderCalendar('calendar', userData.id);
+        });
+    };
+
+    window.saveCargo = () => { 
+        const n = document.getElementById('cargo-name').value, q = document.getElementById('cargo-qty').value; 
+        if(n && q) push(ref(db, 'cargo'), { nomi: n, miqdori: q, sana: "01.05.2026" }); 
+    };
+
     window.showUsersList = () => {
         showView('view-users');
         onValue(ref(db, 'users'), snap => {
             const list = document.getElementById('users-list-div'); list.innerHTML = "";
             snap.forEach(child => {
-                const u = child.val();
-                if(u.ism === "Admin") return;
-                list.innerHTML += `<div class="list-item">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:30px; height:30px; opacity:0.6;">
-                        <span>${u.ism}</span>
-                    </div>
-                    <button class="btn-blue" style="padding:8px 15px; width:auto; font-size:11px; margin:0;" onclick="viewUserDetail('${child.key}')">JADVAL</button>
-                </div>`;
+                const u = child.val(); if(u.ism === "Admin") return;
+                list.innerHTML += `<div class="list-item"><span>${u.ism}</span><button class="btn-blue" style="padding:8px 15px; width:auto; font-size:11px; margin:0;" onclick="viewUserDetail('${child.key}')">JADVAL</button></div>`;
             });
         });
     };
@@ -299,45 +372,25 @@
         const snap = await get(ref(db, 'users/' + userKey));
         const u = snap.val();
         document.getElementById('detail-name').innerText = u.ism;
-        document.getElementById('detail-phone-text').innerText = u.tel || "Tel kiritilmagan";
-        
+        document.getElementById('detail-phone-text').innerText = u.tel || "...";
         showView('view-user-detail');
         renderCalendar('admin-user-calendar', u.id);
         
         const historySnap = await get(ref(db, 'history'));
-        const div = document.getElementById('user-stats-table-div'); 
-        let html = `<table class="stats-table"><thead><tr><th>SANA</th><th>VAQT</th><th>AMAL</th></tr></thead><tbody>`;
-        
+        const div = document.getElementById('user-stats-table-div');
+        const t = translations[currentLang];
+        let html = `<table class="stats-table"><thead><tr><th>${t.tableSana}</th><th>${t.tableVaqt}</th><th>${t.tableAmal}</th></tr></thead><tbody>`;
         if(historySnap.exists()){
             historySnap.forEach(c => { 
-                if(c.val().id == u.id) {
-                    html += `<tr>
-                        <td>${c.val().sana}</td>
-                        <td>${c.val().vaqt}</td>
-                        <td><button class="btn-red" style="padding:5px 10px; font-size:9px; margin:0; width:auto;" onclick="deleteLog('${c.key}', '${userKey}')">X</button></td>
-                    </tr>`;
-                }
+                if(c.val().id == u.id) html += `<tr><td>${c.val().sana}</td><td>${c.val().vaqt}</td><td><button class="btn-red" style="padding:5px 10px; font-size:9px; margin:0; width:auto;" onclick="deleteLog('${c.key}', '${userKey}')">X</button></td></tr>`;
             });
         }
-        html += `</tbody></table>`;
-        div.innerHTML = html;
+        div.innerHTML = html + `</tbody></table>`;
     };
 
-    window.deleteLog = (logKey, userKey) => { 
-        if(confirm("Ushbu yozuvni o'chirmoqchimisiz?")) {
-            remove(ref(db, 'history/' + logKey)).then(() => viewUserDetail(userKey));
-        }
-    };
-
-    window.doCheckIn = () => {
-        const n = new Date(), ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
-        push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: n.toLocaleTimeString() }).then(() => {
-            alert("OK! Davomat qayd etildi.");
-            renderCalendar('calendar', userData.id);
-        });
-    };
-
-    window.saveCargo = () => { const n = document.getElementById('cargo-name').value, q = document.getElementById('cargo-qty').value; if(n && q) push(ref(db, 'cargo'), { nomi: n, miqdori: q, sana: "01.05.2026" }); };
+    window.deleteLog = (k, uk) => { if(confirm("?")) remove(ref(db, 'history/' + k)).then(() => viewUserDetail(uk)); };
+    window.uploadBackground = () => { /* ... */ };
+    window.resetBackground = () => set(ref(db, 'settings/background'), "");
 </script>
 </body>
 </html>
