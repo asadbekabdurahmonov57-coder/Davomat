@@ -199,8 +199,25 @@
     </div>
 
     <div id="view-news-edit" class="screen hidden"><div class="card"><h3>E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px;"></textarea><button class="btn-green" onclick="saveNews()">SAQLASH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
-    <div id="view-users" class="screen hidden"><div class="card"><h3>ISHCHILAR</h3><div id="users-list-div"></div><button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
-    <div id="view-user-detail" class="screen hidden"><div class="card"><h3 id="detail-name"></h3><div class="calendar-grid" id="admin-user-calendar"></div><div id="user-stats-table-div"></div><button id="t-back4" class="btn-blue" onclick="showView('view-users')">ORQAGA</button></div></div>
+    
+    <div id="view-users" class="screen hidden">
+        <div class="card">
+            <h3>ISHCHILAR</h3>
+            <div id="users-list-div"></div>
+            <button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
+        </div>
+    </div>
+    
+    <div id="view-user-detail" class="screen hidden">
+        <div class="card">
+            <h3 id="detail-name" style="color: var(--blue); margin-bottom: 5px;"></h3>
+            <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin-bottom: 10px;"></div>
+            <div class="calendar-grid" id="admin-user-calendar"></div>
+            <h4 style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
+            <div id="user-stats-table-div" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px;"></div>
+            <button id="t-back4" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
+        </div>
+    </div>
 </div>
 
 <script type="module">
@@ -299,7 +316,34 @@
     async function showUserDetail(user) {
         showView('view-user-detail');
         document.getElementById('detail-name').innerText = user.ism;
+        
+        // Parol va Tel ma'lumotlarini ko'rsatish
+        document.getElementById('user-info-box').innerHTML = `
+            <p style="margin:2px 0;">🔑 Parol: <span style="color:var(--orange)">${user.pass}</span></p>
+            <p style="margin:2px 0;">📞 Tel: ${user.tel || 'Kiritilmagan'}</p>
+            <p style="margin:2px 0;">🆔 ID: ${user.id}</p>
+        `;
+        
         renderCalendar('admin-user-calendar', user.id);
+        
+        // Ishchining aniq vaqtlarini yuklash
+        const histSnap = await get(ref(db, 'history'));
+        const tableDiv = document.getElementById('user-stats-table-div');
+        tableDiv.innerHTML = "";
+        if(histSnap.exists()){
+            histSnap.forEach(h => {
+                const val = h.val();
+                if(val.id == user.id){
+                    tableDiv.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
+                            <span>📅 ${val.sana}</span>
+                            <span style="color:var(--green)">⏰ ${val.vaqt}</span>
+                        </div>
+                    `;
+                }
+            });
+        }
+        if(tableDiv.innerHTML === "") tableDiv.innerHTML = "<p style='font-size:12px; opacity:0.5;'>Hali davomat yo'q</p>";
     }
 
     window.saveNews = () => {
