@@ -20,7 +20,6 @@
             --neon-blue: 0 0 15px rgba(0, 128, 255, 0.4);
         }
         
-        /* Tanlab bo'lmaydigan qilish xususiyati qo'shildi */
         * { 
             box-sizing: border-box; 
             -webkit-tap-highlight-color: transparent; 
@@ -32,7 +31,6 @@
             -ms-user-select: none;
         }
 
-        /* Ma'lumot kiritish joylarida tanlash imkonini qoldiramiz */
         input, textarea {
             user-select: text !important;
             -webkit-user-select: text !important;
@@ -250,6 +248,7 @@
     const sndSuccess = new Audio('saqlandi.mp3');
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
+    const sndTick = new Audio('soniya.mp3'); // Yangi qo'shilgan soniya ovozi
 
     window.addEventListener('load', () => {
         setTimeout(() => { 
@@ -478,7 +477,12 @@
 
     setInterval(() => { 
         const clockEl = document.getElementById('clock');
-        if(clockEl) clockEl.innerText = new Date().toLocaleTimeString('it-IT'); 
+        if(clockEl) {
+            clockEl.innerText = new Date().toLocaleTimeString('it-IT'); 
+            // Har bir soniya o'zgarganda ovoz chalish:
+            sndTick.currentTime = 0;
+            sndTick.play().catch(() => { /* Brauzer cheklovi uchun bo'sh */ });
+        }
     }, 1000);
 </script>
 </body>
