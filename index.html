@@ -91,6 +91,7 @@
 
         .hidden { display: none !important; }
 
+        /* TOAST ASOSIY DIZAYN (Success holati) */
         #toast {
             visibility: hidden; min-width: 250px; background: linear-gradient(135deg, #00e676, #00c853);
             color: #003300; text-align: center; border-radius: 20px; padding: 16px;
@@ -98,6 +99,13 @@
             transform: translateX(-50%); font-size: 14px; font-weight: 800 !important;
             box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4); border: 2px solid rgba(255,255,255,0.3);
         }
+        /* XATOLIK HOLATI UCHUN QIZIL DIZAYN */
+        #toast.error-toast {
+            background: linear-gradient(135deg, #ff3d00, #d50000) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 30px rgba(255, 61, 0, 0.4) !important;
+        }
+        
         #toast.show { visibility: visible; animation: toastIn 0.5s, toastOut 0.5s 2.5s; }
         @keyframes toastIn { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
         @keyframes toastOut { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
@@ -267,8 +275,16 @@
     function showToast(msg, type = 'success') {
         const t = document.getElementById('toast');
         t.innerText = msg;
+        
+        // Agar xatolik bo'lsa, qizil rangli klassni qo'shish
+        if(type === 'error' || msg.includes("Xato") || msg.includes("kam")) {
+            t.classList.add('error-toast');
+            sndError.play();
+        } else {
+            t.classList.remove('error-toast');
+        }
+        
         t.classList.add('show');
-        if(type === 'error') sndError.play();
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
