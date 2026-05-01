@@ -200,10 +200,10 @@
 
     <div id="view-my-attn" class="screen hidden">
         <div class="card">
-            <h3 style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
+            <h3 id="t-my-attn-title" style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
             <div class="calendar-grid" id="my-calendar"></div>
             <div id="my-history-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
-            <button class="btn-blue" onclick="showView('view-main')" style="margin-top: 10px;">ORQAGA</button>
+            <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
 
@@ -216,17 +216,17 @@
                     <p id="prof-id" style="margin: 0; color: #888; font-size: 11px;">ID: 0</p>
                 </div>
             </div>
-            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid var(--glass); font-size: 13px;">
-                <p>📞 Tel: <span id="prof-tel-box"></span></p>
-                <p>🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
+            <div id="prof-info-box" style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid var(--glass); font-size: 13px;">
+                <p><span id="t-p-tel">📞 Tel</span>: <span id="prof-tel-box"></span></p>
+                <p><span id="t-p-pass">🔑 Parol</span>: <span id="prof-pass" style="color: var(--orange);"></span></p>
             </div>
-            <button class="btn-blue" onclick="showView('view-main')" style="margin-top: 15px;">ORQAGA</button>
+            <button id="t-back3" class="btn-blue" onclick="showView('view-main')" style="margin-top: 15px;">ORQAGA</button>
         </div>
     </div>
 
-    <div id="view-news-edit" class="screen hidden"><div class="card"><h3>E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px; padding:10px; border:1px solid var(--blue);"></textarea><button class="btn-green" onclick="saveNews()">SAQLASH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
+    <div id="view-news-edit" class="screen hidden"><div class="card"><h3 id="t-news-h3">E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px; padding:10px; border:1px solid var(--blue);"></textarea><button id="t-save" class="btn-green" onclick="saveNews()">SAQLASH</button><button id="t-back4" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
-    <div id="view-users" class="screen hidden"><div class="card"><h3>ISHCHILAR</h3><div id="users-list-div"></div><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
+    <div id="view-users" class="screen hidden"><div class="card"><h3 id="t-users-h3">ISHCHILAR</h3><div id="users-list-div"></div><button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
     <div id="view-user-detail" class="screen hidden">
         <div class="card">
@@ -236,9 +236,9 @@
             </div>
             <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
             <div class="calendar-grid" id="admin-user-calendar"></div>
-            <h4 style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
+            <h4 id="t-visit-h4" style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
             <div id="user-stats-table-div" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px;"></div>
-            <button class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
+            <button id="t-back6" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
 </div>
@@ -279,8 +279,18 @@
     let currentLang = 'lat';
 
     const translations = {
-        lat: { authP: "Tizimga kiring", authBtn: "KIRISH", checkIn: "ISHGA KELDIM", back: "ORQAGA", alertIn: "Qayd etildi!", days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"] },
-        cyr: { authP: "Тизимга киринг", authBtn: "КИРИШ", checkIn: "ИШГА КЕЛДИМ", back: "ОРҚАГА", alertIn: "Қайд этилди!", days: ["Ду","Се","Чо","Па","Жу","Ша","Як"] }
+        lat: { 
+            authP: "Tizimga kiring", authBtn: "KIRISH", checkIn: "ISHGA KELDIM", back: "ORQAGA", alertIn: "Qayd etildi!", days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"],
+            regGo: "RO'YXATDAN O'TISH", regH2: "YANGI HISOB", regBtn: "YARATISH", myAttn: "DAVOMAT BO'LIMI", profGo: "MENING PROFILIM", adminNews: "E'LON QOLDIRISH", adminUsers: "ISHCHILAR (DAVOMAT)", logout: "CHIQISH",
+            myAttnTitle: "MENING DAVOMATIM", profTel: "📞 Tel", profPass: "🔑 Parol", newsH3: "E'LON", save: "SAQLASH", usersH3: "ISHCHILAR", visitH4: "KELGAN VAQTLARI:", del: "O'CHIRISH", newsLabel: "📢 E'LON:",
+            p_user: "Login", p_pass: "Parol", p_name: "Ism sharif", p_phone: "Telefon raqam", toast_err: "Xato!", toast_low: "Ma'lumotlar kam!", toast_done: "Bajarildi!", toast_save: "Saqlandi!", toast_del: "O'chirildi", toast_time: "KELGAN VAQTI:"
+        },
+        cyr: { 
+            authP: "Тизимга киринг", authBtn: "КИРИШ", checkIn: "ИШГА КЕЛДИМ", back: "ОРҚАГА", alertIn: "Қайд этилди!", days: ["Ду","Се","Чо","Па","Жу","Ша","Як"],
+            regGo: "РЎЙХАТДАН ЎТИШ", regH2: "ЯНГИ ҲИСОБ", regBtn: "ЯРАТИШ", myAttn: "ДАВОМАТ БЎЛИМИ", profGo: "МЕНИНГ ПРОФИЛИМ", adminNews: "ЭЪЛОН ҚОЛДИРИШ", adminUsers: "ИШЧИЛАР (ДАВОМАТ)", logout: "ЧИҚИШ",
+            myAttnTitle: "МЕНИНГ ДАВОМАТИМ", profTel: "📞 Тел", profPass: "🔑 Парол", newsH3: "ЭЪЛОН", save: "САҚЛАШ", usersH3: "ИШЧИЛАР", visitH4: "КЕЛГАН ВАҚТЛАРИ:", del: "ЎЧИРИШ", newsLabel: "📢 ЭЪЛОН:",
+            p_user: "Логин", p_pass: "Парол", p_name: "Исм шариф", p_phone: "Телефон рақам", toast_err: "Хато!", toast_low: "Маълумотлар кам!", toast_done: "Бажарилди!", toast_save: "Сақланди!", toast_del: "Ўчирилди", toast_time: "КЕЛГАН ВАҚТИ:"
+        }
     };
 
     window.showView = id => {
@@ -297,14 +307,61 @@
 
     function updateUI() {
         const t = translations[currentLang];
+        // Auth
         document.getElementById('t-auth-p').innerText = t.authP;
         document.getElementById('t-auth-btn').innerText = t.authBtn;
+        document.getElementById('t-reg-go').innerText = t.regGo;
+        document.getElementById('user').placeholder = t.p_user;
+        document.getElementById('pass').placeholder = t.p_pass;
+        // Reg
+        document.getElementById('t-reg-h2').innerText = t.regH2;
+        document.getElementById('reg-user').placeholder = t.p_name;
+        document.getElementById('reg-phone').placeholder = t.p_phone;
+        document.getElementById('reg-pass').placeholder = t.p_pass;
+        document.getElementById('t-reg-btn').innerText = t.regBtn;
+        document.getElementById('t-back1').innerText = t.back;
+        // Main
         document.getElementById('check-in-btn').innerText = t.checkIn;
+        document.getElementById('t-my-attn').innerText = t.myAttn;
+        document.getElementById('t-profile-go').innerText = t.profGo;
+        document.getElementById('t-admin-news').innerText = t.adminNews;
+        document.getElementById('t-admin-users').innerText = t.adminUsers;
+        document.getElementById('t-logout').innerText = t.logout;
+        document.getElementById('t-news-label').innerText = t.newsLabel;
+        // My Attendance
+        document.getElementById('t-my-attn-title').innerText = t.myAttnTitle;
+        document.getElementById('t-back2').innerText = t.back;
+        // Profile
+        document.getElementById('t-p-tel').innerText = t.profTel;
+        document.getElementById('t-p-pass').innerText = t.profPass;
+        document.getElementById('t-back3').innerText = t.back;
+        // News Edit
+        document.getElementById('t-news-h3').innerText = t.newsH3;
+        document.getElementById('t-save').innerText = t.save;
+        document.getElementById('t-back4').innerText = t.back;
+        // Users List
+        document.getElementById('t-users-h3').innerText = t.usersH3;
+        document.getElementById('t-back5').innerText = t.back;
+        // User Detail
+        document.getElementById('t-visit-h4').innerText = t.visitH4;
+        document.getElementById('t-back6').innerText = t.back;
+        document.getElementById('del-acc-btn').innerText = t.del;
     }
 
     function showToast(msg, type = 'success') {
         const t = document.getElementById('toast');
-        t.innerText = msg;
+        const trans = translations[currentLang];
+        
+        // Dinamik xabarlarni tarjima qilish
+        let finalMsg = msg;
+        if(msg === "Xato!") finalMsg = trans.toast_err;
+        if(msg === "Ma'lumotlar kam!") finalMsg = trans.toast_low;
+        if(msg === "Bajarildi!") finalMsg = trans.toast_done;
+        if(msg === "Saqlandi!") finalMsg = trans.toast_save;
+        if(msg === "O'chirildi") finalMsg = trans.toast_del;
+        if(msg.includes("KELGAN VAQTI:")) finalMsg = msg.replace("KELGAN VAQTI:", trans.toast_time);
+
+        t.innerText = finalMsg;
         
         if(type === 'error' || msg.includes("Xato") || msg.includes("kam")) {
             t.classList.add('error-toast');
@@ -316,7 +373,6 @@
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
-    // Funksiyani global qilish (kalendar uchun)
     window.showToast = showToast;
 
     window.login = async () => {
@@ -369,8 +425,9 @@
 
     window.showUserDetail = async (user) => {
         window.showView('view-user-detail');
+        const t = translations[currentLang];
         document.getElementById('detail-name').innerText = user.ism;
-        document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">🔑 Parol: <span style="color:var(--orange)">${user.pass}</span></p><p style="margin:2px 0;">📞 Tel: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
+        document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${user.pass}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
         
         document.getElementById('del-acc-btn').onclick = async () => {
             await remove(ref(db, 'users/' + user.ism));
@@ -398,7 +455,7 @@
                 }
             });
         }
-        document.getElementById('user-stats-table-div').innerHTML = rows || "<p style='font-size:12px; opacity:0.5;'>Yo'q</p>";
+        document.getElementById('user-stats-table-div').innerHTML = rows || "<p style='font-size:12px; opacity:0.5;'>-</p>";
     }
 
     window.deleteHistoryItem = async (key, userId) => {
@@ -457,8 +514,7 @@
             
             if(historyData[ds]) {
                 cls += ' present';
-                // Yashil kun bosilganda vaqtni ko'rsatadi
-                clickAttr = `onclick="window.showToast('ISHGA KELGAN VAQTI: ${historyData[ds]}')"`;
+                clickAttr = `onclick="window.showToast('KELGAN VAQTI: ${historyData[ds]}')"`;
             }
             
             html += `<div class="${cls}" ${clickAttr}>${d}</div>`;
