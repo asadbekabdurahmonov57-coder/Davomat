@@ -316,6 +316,8 @@
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
+    // Funksiyani global qilish (kalendar uchun)
+    window.showToast = showToast;
 
     window.login = async () => {
         const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value.trim();
@@ -432,7 +434,7 @@
         const now = new Date(), t = translations[currentLang];
         const snap = await get(ref(db, 'history'));
         
-        let historyData = {}; // Sana kalit, vaqt qiymat bo'ladi
+        let historyData = {}; 
         if(snap.exists()) {
             snap.forEach(c => { 
                 const v = c.val();
@@ -455,8 +457,8 @@
             
             if(historyData[ds]) {
                 cls += ' present';
-                // Yashil kun bosilganda toast orqali soatni chiqaradi
-                clickAttr = `onclick="showToast('KELGAN VAQTI: ${historyData[ds]}')"`;
+                // Yashil kun bosilganda vaqtni ko'rsatadi
+                clickAttr = `onclick="window.showToast('ISHGA KELGAN VAQTI: ${historyData[ds]}')"`;
             }
             
             html += `<div class="${cls}" ${clickAttr}>${d}</div>`;
@@ -467,7 +469,7 @@
     window.doCheckIn = () => {
         const n = new Date();
         const ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
-        const vt = n.toLocaleTimeString('it-IT').substring(0, 5); // Faqat HH:mm qismi
+        const vt = n.toLocaleTimeString('it-IT').substring(0, 5);
         push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: vt }).then(() => {
             sndSuccess.play(); 
             showToast(translations[currentLang].alertIn);
