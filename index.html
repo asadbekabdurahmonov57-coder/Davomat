@@ -248,6 +248,17 @@
         if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else alert("Xato!");
     };
 
+    window.doRegister = async () => {
+        const ism = document.getElementById('reg-user').value;
+        const tel = document.getElementById('reg-phone').value;
+        const pass = document.getElementById('reg-pass').value;
+        if(!ism || !pass) return alert("To'ldiring!");
+        const id = Math.floor(1000 + Math.random() * 9000);
+        await set(ref(db, 'users/' + ism), { ism, tel, pass, id, role: 'user' });
+        alert("Tayyor! Login: " + ism);
+        showView('view-auth');
+    };
+
     function startApp(user) {
         userData = user; showView('view-main');
         document.getElementById('prof-name').innerText = user.ism;
@@ -264,6 +275,37 @@
             document.getElementById('t-my-attn').classList.remove('hidden');
         }
     }
+
+    window.showUsersList = async () => {
+        showView('view-users');
+        const snap = await get(ref(db, 'users'));
+        const div = document.getElementById('users-list-div');
+        div.innerHTML = "";
+        if(snap.exists()){
+            snap.forEach(u => {
+                const d = u.val();
+                if(d.role !== 'admin'){
+                    const b = document.createElement('button');
+                    b.className = "btn-outline";
+                    b.style.marginBottom = "5px";
+                    b.innerText = d.ism;
+                    b.onclick = () => showUserDetail(d);
+                    div.appendChild(b);
+                }
+            });
+        }
+    };
+
+    async function showUserDetail(user) {
+        showView('view-user-detail');
+        document.getElementById('detail-name').innerText = user.ism;
+        renderCalendar('admin-user-calendar', user.id);
+    }
+
+    window.saveNews = () => {
+        const val = document.getElementById('news-input').value;
+        set(ref(db, 'settings/news'), val).then(() => { alert("Saqlandi"); showView('view-main'); });
+    };
 
     window.showMyAttendance = () => {
         showView('view-my-attn');
