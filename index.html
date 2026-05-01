@@ -7,9 +7,7 @@
     <script>
         const sndLoading = new Audio('yuklash.mp3');
         sndLoading.loop = true;
-        // Brauzer ruxsat bersa darhol ijro etish
         sndLoading.play().catch(() => {
-            // Agar autoplay bloklansa, foydalanuvchi ekranga birinchi marta teginishi bilan boshlanadi
             document.addEventListener('touchstart', () => sndLoading.play(), {once: true});
             document.addEventListener('click', () => sndLoading.play(), {once: true});
         });
@@ -21,7 +19,24 @@
             --glass: rgba(255, 255, 255, 0.08);
             --neon-blue: 0 0 15px rgba(0, 128, 255, 0.4);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 700 !important; will-change: transform; }
+        
+        /* Tanlab bo'lmaydigan qilish xususiyati qo'shildi */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            font-weight: 700 !important; 
+            will-change: transform;
+            user-select: none; 
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none;
+        }
+
+        /* Ma'lumot kiritish joylarida tanlash imkonini qoldiramiz */
+        input, textarea {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
         
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
@@ -231,7 +246,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
     import { getDatabase, ref, set, push, get, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-    // Audio fayllar (sndLoading yuqorida aniqlangan)
     const sndClick = new Audio('bosishlar.mp3');
     const sndSuccess = new Audio('saqlandi.mp3');
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
@@ -243,13 +257,12 @@
             ss.style.opacity = '0'; 
             setTimeout(() => {
                 ss.style.visibility = 'hidden';
-                sndLoading.pause(); // To'xtatish
+                sndLoading.pause(); 
                 sndLoading.currentTime = 0;
             }, 400); 
         }, 1200);
     });
 
-    // Barcha tugmalarga ovoz qo'shish
     document.addEventListener('click', (e) => {
         if(e.target.tagName === 'BUTTON') {
             sndClick.currentTime = 0;
