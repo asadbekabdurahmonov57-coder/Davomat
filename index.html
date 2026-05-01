@@ -21,73 +21,117 @@
             transition: background 0.5s ease;
         }
 
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050510; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .splash-logo {
+            font-size: 50px; color: var(--blue);
+            text-shadow: 0 0 20px rgba(0, 128, 255, 0.6);
+            animation: pulse 1.5s infinite ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        .clock-loader {
+            width: 80px; height: 80px;
+            border: 4px solid var(--blue);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: var(--neon-blue);
+        }
+        .clock-loader::after, .clock-loader::before {
+            content: ""; position: absolute;
+            background-color: var(--blue);
+            top: 50%; left: 50%;
+            transform-origin: bottom center;
+            border-radius: 2px;
+        }
+        .clock-loader::after { width: 4px; height: 20px; margin-left: -2px; margin-top: -20px; animation: clock-spin 6s linear infinite; }
+        .clock-loader::before { width: 2px; height: 30px; margin-left: -1px; margin-top: -30px; animation: clock-spin 1s linear infinite; }
+
+        @keyframes clock-spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
+
         .app-wrapper { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
-        .screen { width: 100%; max-width: 500px; height: 100%; display: flex; flex-direction: column; overflow-y: auto; padding: 20px; scrollbar-width: none; }
+        .screen { width: 100%; max-width: 500px; height: 100%; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; scrollbar-width: none; }
         .screen::-webkit-scrollbar { display: none; }
         
         .card { 
-            background: var(--card); padding: 25px; border-radius: 30px; 
+            background: var(--card); padding: 15px; border-radius: 25px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid var(--glass); 
-            text-align: center; margin-bottom: 20px; backdrop-filter: blur(15px);
+            text-align: center; margin-bottom: 10px; backdrop-filter: blur(15px);
             animation: fadeIn 0.5s ease;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        input { width: 100%; padding: 16px; margin: 10px 0; border-radius: 18px; border: 1px solid #2a2a45; background: #000; color: white; font-size: 16px; transition: 0.3s; }
-        input:focus { border-color: var(--blue); outline: none; box-shadow: var(--neon-blue); }
-
+        input { width: 100%; padding: 12px; margin: 6px 0; border-radius: 15px; border: 1px solid #2a2a45; background: #000; color: white; font-size: 15px; }
         button { 
-            width: 100%; padding: 16px; margin: 8px 0; border-radius: 18px; border: none; 
+            width: 100%; padding: 14px; margin: 8px 0; border-radius: 18px; border: none; 
             font-size: 14px; cursor: pointer; transition: 0.3s; color: white; 
-            text-transform: uppercase; letter-spacing: 1px; position: relative; overflow: hidden;
+            text-transform: uppercase; letter-spacing: 1px;
         }
         button:active { transform: scale(0.96); }
         
-        .btn-blue { background: linear-gradient(135deg, #0080ff, #0055ff); box-shadow: 0 4px 15px rgba(0, 128, 255, 0.3); }
-        .btn-green { background: linear-gradient(135deg, #00e676, #00c853); color: #003300; box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3); }
-        .btn-red { background: linear-gradient(135deg, #ff3d00, #d50000); box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3); }
-        .btn-orange { background: linear-gradient(135deg, #ff9100, #ff6d00); box-shadow: 0 4px 15px rgba(255, 145, 0, 0.3); }
+        #check-in-btn {
+            width: 150px !important; height: 150px !important; border-radius: 50% !important;
+            margin: 15px auto !important; display: flex; align-items: center; justify-content: center;
+            font-size: 16px !important; border: 5px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 30px rgba(0, 230, 118, 0.4);
+        }
+
+        .btn-blue { background: linear-gradient(135deg, #0080ff, #0055ff); }
+        .btn-green { background: linear-gradient(135deg, #00e676, #00c853); color: #003300; }
+        .btn-red { background: linear-gradient(135deg, #ff3d00, #d50000); }
+        .btn-orange { background: linear-gradient(135deg, #ff9100, #ff6d00); }
         .btn-outline { background: transparent; border: 2px solid var(--glass); color: #fff; }
 
-        #clock { font-size: 55px; color: #00ffb3; margin: 15px 0; text-shadow: 0 0 25px rgba(0,255,179,0.5); font-variant-numeric: tabular-nums; }
+        #clock { font-size: 45px; color: #00ffb3; margin: 5px 0; text-shadow: 0 0 20px rgba(0,255,179,0.5); }
         
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; border: 1px solid var(--glass); }
-        .day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #1a1a35; border-radius: 12px; font-size: 12px; transition: 0.3s; border: 1px solid transparent; }
-        .day.today { border-color: var(--blue); color: var(--blue); }
-        .day.present { background: var(--green); color: #000; box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); }
-        .day-name { font-size: 10px; color: #666; text-transform: uppercase; padding-bottom: 5px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid var(--glass); }
+        .day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #1a1a35; border-radius: 8px; font-size: 11px; transition: 0.3s; }
+        .day.today { border: 1px solid var(--blue); color: var(--blue); }
+        .day.present { background: var(--green); color: #000; }
+        .day-name { font-size: 9px; color: #666; text-transform: uppercase; padding-bottom: 3px; }
 
-        .stats-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 10px; }
-        .stats-table th { padding: 12px; color: #888; font-size: 11px; text-transform: uppercase; text-align: left; }
-        .stats-table td { padding: 12px; background: rgba(255,255,255,0.03); font-size: 13px; }
-        .stats-table tr td:first-child { border-radius: 15px 0 0 15px; }
-        .stats-table tr td:last-child { border-radius: 0 15px 15px 0; }
+        .announcement-box { 
+            background: linear-gradient(45deg, rgba(255, 145, 0, 0.1), rgba(0, 128, 255, 0.1));
+            border-left: 4px solid var(--orange); padding: 10px; border-radius: 12px;
+            margin: 10px 0; text-align: left; font-size: 12px;
+        }
 
-        .list-container { text-align: left; border-radius: 20px; max-height: 400px; overflow-y: auto; margin-top: 15px; }
-        .list-item { padding: 15px; background: rgba(255,255,255,0.03); border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--glass); }
-        
-        .profile-header { display: flex; align-items: center; gap: 20px; text-align: left; margin-bottom: 25px; }
-        .profile-avatar { width: 85px; height: 85px; background: #1a1a35; border-radius: 50%; border: 3px solid var(--blue); box-shadow: var(--neon-blue); display: flex; align-items: center; justify-content: center; }
+        .stats-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
+        .stats-table td { padding: 8px; background: rgba(255,255,255,0.03); font-size: 12px; border-radius: 10px; }
 
-        .lang-switch { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
-        .lang-btn { padding: 5px 15px; font-size: 10px; width: auto; border: 1px solid var(--glass); }
-        .lang-btn.active { background: var(--blue); border-color: var(--blue); }
+        .profile-header { display: flex; align-items: center; gap: 15px; text-align: left; margin-bottom: 15px; }
+        .profile-avatar { width: 60px; height: 60px; background: #1a1a35; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; }
+
+        .lang-switch { display: flex; gap: 5px; justify-content: center; margin-bottom: 10px; }
+        .lang-btn { padding: 6px 12px; font-size: 10px; width: auto; border: 1px solid var(--glass); }
+        .lang-btn.active { background: var(--blue) !important; }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
+<div id="splash-screen">
+    <div class="splash-logo">STATS MB</div>
+    <div class="clock-loader"></div>
+    <p style="margin-top: 30px; color: #444; font-size: 12px; letter-spacing: 2px;">POWERED BY ASADBEK</p>
+</div>
+
 <div class="app-wrapper">
     <div id="view-auth" class="screen">
-        <div class="card" style="margin-top: 50px;">
+        <div class="card" style="margin-top: 20px;">
             <div class="lang-switch">
-                <button class="lang-btn active" onclick="setLang('lat')">LOTIN</button>
-                <button class="lang-btn" onclick="setLang('cyr')">КРИЛЛ</button>
+                <button id="btn-lat" class="lang-btn active" onclick="setLang('lat')">LOTIN</button>
+                <button id="btn-cyr" class="lang-btn" onclick="setLang('cyr')">КРИЛЛ</button>
             </div>
-            <h1 style="color: var(--blue); font-size: 40px; margin-bottom: 5px;">STATS MB</h1>
-            <p id="t-auth-p" style="color: #666; margin-bottom: 20px;">Tizimga kiring</p>
+            <h1 style="color: var(--blue); font-size: 30px; margin: 0;">STATS MB</h1>
+            <p id="t-auth-p" style="color: #666; margin-bottom: 10px;">Tizimga kiring</p>
             <input type="text" id="user" placeholder="Login">
             <input type="password" id="pass" placeholder="Parol">
             <button id="t-auth-btn" class="btn-blue" onclick="login()">KIRISH</button>
@@ -97,7 +141,7 @@
 
     <div id="view-reg" class="screen hidden">
         <div class="card">
-            <h2 id="t-reg-h2" style="color: var(--orange);">YANGI HISOB</h2>
+            <h2 id="t-reg-h2" style="color: var(--orange); margin: 0 0 10px 0;">YANGI HISOB</h2>
             <input type="text" id="reg-user" placeholder="Ism sharif">
             <input type="tel" id="reg-phone" placeholder="Telefon raqam">
             <input type="password" id="reg-pass" placeholder="Parol">
@@ -109,175 +153,88 @@
     <div id="view-main" class="screen hidden">
         <div class="card">
             <div id="clock">00:00:00</div>
-            <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
-            <button id="t-profile-go" class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
-            <button id="t-cargo-go" class="btn-orange" onclick="showView('view-cargo')">YUKLAR (CARGO)</button>
-            <div class="calendar-grid" id="calendar"></div>
-            
-            <div id="admin-tools" class="hidden" style="margin-top: 25px; border-top: 1px solid #2a2a45; padding-top: 15px;">
-                <button id="t-admin-users" class="btn-orange" onclick="showUsersList()">ISHCHILAR (DAVOMAT)</button>
-                <button id="t-admin-bg" class="btn-outline" onclick="showView('view-bg-settings')">FONNI SOZLASH</button>
+            <p style="color: #444; font-size: 10px; margin: -5px 0 10px 0; letter-spacing: 1px;">POWERED BY ASADBEK</p>
+            <div id="news-container" class="announcement-box hidden">
+                <strong id="t-news-label" style="color:var(--orange)">📢 E'LON:</strong>
+                <div id="news-text">...</div>
             </div>
-            <button id="t-logout" class="btn-red" onclick="location.reload()" style="margin-top: 20px;">CHIQISH</button>
+            <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
+            
+            <button id="t-my-attn" class="btn-outline" style="border-color: var(--green); color: var(--green);" onclick="showMyAttendance()">DAVOMAT BO'LIMI</button>
+            
+            <button id="t-profile-go" class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
+            
+            <div id="admin-tools" class="hidden" style="margin-top: 15px; border-top: 1px solid #2a2a45; padding-top: 10px;">
+                <button id="t-admin-news" class="btn-green" onclick="showView('view-news-edit')">E'LON QOLDIRISH</button>
+                <button id="t-admin-users" class="btn-orange" onclick="showUsersList()">ISHCHILAR (DAVOMAT)</button>
+            </div>
+            <button id="t-logout" class="btn-red" onclick="location.reload()">CHIQISH</button>
+        </div>
+    </div>
+
+    <div id="view-my-attn" class="screen hidden">
+        <div class="card">
+            <h3 style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
+            <div class="calendar-grid" id="my-calendar"></div>
+            <div id="my-history-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
+            <button class="btn-blue" onclick="showView('view-main')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
 
     <div id="view-profile" class="screen hidden">
         <div class="card">
             <div class="profile-header">
-                <div class="profile-avatar">
-                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 70%; height: 70%; opacity: 0.8;">
-                </div>
+                <div class="profile-avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 70%;"></div>
                 <div>
-                    <h2 id="prof-name" style="margin: 0; color: var(--blue);">...</h2>
-                    <p id="prof-id" style="margin: 0; color: #888; font-size: 13px;">ID: 0</p>
+                    <h2 id="prof-name" style="margin: 0; color: var(--blue); font-size: 18px;">...</h2>
+                    <p id="prof-id" style="margin: 0; color: #888; font-size: 11px;">ID: 0</p>
                 </div>
             </div>
-            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; border: 1px solid var(--glass);">
-                <p id="t-p-tel" style="margin: 8px 0;">📞 Tel: <span id="prof-tel-box"></span></p>
-                <p id="t-p-date" style="margin: 8px 0;">📅 Sana: <span id="prof-date" style="color: var(--green);">01.05.2026</span></p>
-                <p id="t-p-pass" style="margin: 8px 0;">🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
+            <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid var(--glass); font-size: 13px;">
+                <p id="t-p-tel">📞 Tel: <span id="prof-tel-box"></span></p>
+                <p id="t-p-pass">🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
             </div>
-            <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 20px;">ORQAGA</button>
+            <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 15px;">ORQAGA</button>
         </div>
     </div>
 
-    <div id="view-cargo" class="screen hidden">
-        <div class="card">
-            <h3 id="t-cargo-h3">YUKLAR</h3>
-            <input type="text" id="cargo-name" placeholder="Yuk nomi">
-            <input type="number" id="cargo-qty" placeholder="Miqdori">
-            <button id="t-cargo-save" class="btn-green" onclick="saveCargo()">SAQLASH</button>
-            <button id="t-back3" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
-            <div class="list-container" id="cargo-list"></div>
-        </div>
-    </div>
-
-    <div id="view-user-detail" class="screen hidden">
-        <div class="card">
-            <div class="profile-avatar" style="width:100px; height:100px; margin: 0 auto 15px auto;">
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 60%; height: 60%; opacity: 0.8;">
-            </div>
-            <h3 id="detail-name" style="margin:0;">...</h3>
-            <p id="detail-phone-text" style="color: #888; margin-top: 5px;">...</p>
-            <div class="calendar-grid" id="admin-user-calendar"></div>
-            <h4 id="t-detail-h4" style="margin-top: 20px; color: var(--blue);">SHAXSIY JADVAL</h4>
-            <div id="user-stats-table-div" style="overflow-x:auto;"></div>
-            <button id="t-back4" class="btn-blue" onclick="showView('view-users')" style="margin-top: 15px;">ORQAGA</button>
-        </div>
-    </div>
-
-    <div id="view-users" class="screen hidden">
-        <div class="card">
-            <h3 id="t-users-h3">ISHCHILAR RO'YXATI</h3>
-            <p id="t-users-p" style="font-size: 11px; color: #666;">Davomatini ko'rish uchun tanlang</p>
-            <div class="list-container" id="users-list-div"></div>
-            <button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
-        </div>
-    </div>
-
-    <div id="view-bg-settings" class="screen hidden">
-        <div class="card">
-            <h3 id="t-bg-h3">FON RASMI</h3>
-            <input type="file" id="bg-file" accept="image/*">
-            <button id="t-bg-save" class="btn-green" onclick="uploadBackground()">SAQLASH</button>
-            <button id="t-bg-reset" class="btn-red" onclick="resetBackground()">O'CHIRISH</button>
-            <button id="t-back6" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
-        </div>
-    </div>
+    <div id="view-news-edit" class="screen hidden"><div class="card"><h3>E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px;"></textarea><button class="btn-green" onclick="saveNews()">SAQLASH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
+    <div id="view-users" class="screen hidden"><div class="card"><h3>ISHCHILAR</h3><div id="users-list-div"></div><button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
+    <div id="view-user-detail" class="screen hidden"><div class="card"><h3 id="detail-name"></h3><div class="calendar-grid" id="admin-user-calendar"></div><div id="user-stats-table-div"></div><button id="t-back4" class="btn-blue" onclick="showView('view-users')">ORQAGA</button></div></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getDatabase, ref, set, push, get, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+    import { getDatabase, ref, set, push, get, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSy" + "A...", 
-        authDomain: "stats-mb.firebaseapp.com",
-        databaseURL: "https://stats-mb-default-rtdb.firebaseio.com",
-        projectId: "stats-mb",
-        storageBucket: "stats-mb.appspot.com",
-        messagingSenderId: "159009969300",
-        appId: "1:159009969300:web:1117ffb9a15bcc97089081"
-    };
+    window.addEventListener('load', () => setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 800); }, 2000));
 
+    const firebaseConfig = { apiKey: "AIzaSyA...", authDomain: "stats-mb.firebaseapp.com", databaseURL: "https://stats-mb-default-rtdb.firebaseio.com", projectId: "stats-mb" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     let userData = null;
     let currentLang = 'lat';
 
     const translations = {
-        lat: {
-            authP: "Tizimga kiring", authBtn: "KIRISH", regGo: "RO'YXATDAN O'TISH",
-            regH2: "YANGI HISOB", regBtn: "YARATISH", back: "ORQAGA",
-            checkIn: "ISHGA KELDIM", profileGo: "MENING PROFILIM", cargoGo: "YUKLAR (CARGO)",
-            adminUsers: "ISHCHILAR (DAVOMAT)", adminBg: "FONNI SOZLASH", logout: "CHIQISH",
-            pTel: "📞 Tel:", pDate: "📅 Sana:", pPass: "🔑 Parol:",
-            cargoH3: "YUKLAR", cargoSave: "SAQLASH", usersH3: "ISHCHILAR RO'YXATI",
-            usersP: "Davomatini ko'rish uchun tanlang", bgH3: "FON RASMI", bgSave: "SAQLASH", 
-            bgReset: "O'CHIRISH", detailH4: "SHAXSIY JADVAL",
-            alertErr: "Xato!", alertReg: "Tayyor!", alertIn: "OK! Davomat qayd etildi.",
-            days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"], tableSana: "SANA", tableVaqt: "VAQT", tableAmal: "AMAL"
-        },
-        cyr: {
-            authP: "Тизимга киринг", authBtn: "КИРИШ", regGo: "РЎЙХАТДАН ЎТИШ",
-            regH2: "ЯНГИ ҲИСОБ", regBtn: "ЯРАТИШ", back: "ОРҚАГА",
-            checkIn: "ИШГА КЕЛДИМ", profileGo: "МЕНИНГ ПРОФИЛИМ", cargoGo: "ЮКЛАР (CARGO)",
-            adminUsers: "ИШЧИЛАР (ДАВОМАТ)", adminBg: "ФОННИ СОЗЛАШ", logout: "ЧИҚИШ",
-            pTel: "📞 Тел:", pDate: "📅 Сана:", pPass: "🔑 Парол:",
-            cargoH3: "ЮКЛАР", cargoSave: "САҚЛАШ", usersH3: "ИШЧИЛАР РЎЙХАТИ",
-            usersP: "Давоматини кўриш uchun танланг", bgH3: "ФОН РАСМИ", bgSave: "САҚЛАШ", 
-            bgReset: "ЎЧИРИШ", detailH4: "ШАХСИЙ ЖАДВАЛ",
-            alertErr: "Хато!", alertReg: "Тайёр!", alertIn: "ОК! Давомат қайд этилди.",
-            days: ["Ду","Се","Чо","Па","Жу","Ша","Як"], tableSana: "САНА", tableVaqt: "ВАҚТ", tableAmal: "АМАЛ"
-        }
+        lat: { authP: "Tizimga kiring", authBtn: "KIRISH", checkIn: "ISHGA KELDIM", back: "ORQAGA", alertIn: "Qayd etildi!", days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"] },
+        cyr: { authP: "Тизимга киринг", authBtn: "КИРИШ", checkIn: "ИШГА КЕЛДИМ", back: "ОРҚАГА", alertIn: "Қайд этилди!", days: ["Ду","Се","Чо","Па","Жу","Ша","Як"] }
     };
 
-    window.setLang = (lang) => {
-        currentLang = lang;
+    window.setLang = (lang) => { 
+        currentLang = lang; 
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        event?.target?.classList.add('active');
-        updateUI();
+        if(lang === 'lat') document.getElementById('btn-lat').classList.add('active');
+        else document.getElementById('btn-cyr').classList.add('active');
+        updateUI(); 
     };
 
     function updateUI() {
         const t = translations[currentLang];
         document.getElementById('t-auth-p').innerText = t.authP;
         document.getElementById('t-auth-btn').innerText = t.authBtn;
-        document.getElementById('t-reg-go').innerText = t.regGo;
-        document.getElementById('t-reg-h2').innerText = t.regH2;
-        document.getElementById('t-reg-btn').innerText = t.regBtn;
         document.getElementById('check-in-btn').innerText = t.checkIn;
-        document.getElementById('t-profile-go').innerText = t.profileGo;
-        document.getElementById('t-cargo-go').innerText = t.cargoGo;
-        document.getElementById('t-admin-users').innerText = t.adminUsers;
-        document.getElementById('t-admin-bg').innerText = t.adminBg;
-        document.getElementById('t-logout').innerText = t.logout;
-        document.getElementById('t-cargo-h3').innerText = t.cargoH3;
-        document.getElementById('t-cargo-save').innerText = t.cargoSave;
-        document.getElementById('t-users-h3').innerText = t.usersH3;
-        document.getElementById('t-users-p').innerText = t.usersP;
-        document.getElementById('t-bg-h3').innerText = t.bgH3;
-        document.getElementById('t-bg-save').innerText = t.bgSave;
-        document.getElementById('t-bg-reset').innerText = t.bgReset;
-        document.getElementById('t-detail-h4').innerText = t.detailH4;
-
-        // Back buttons
-        for(let i=1; i<=6; i++) { if(document.getElementById('t-back'+i)) document.getElementById('t-back'+i).innerText = t.back; }
-        
-        // Profile text
-        document.getElementById('t-p-tel').firstChild.textContent = t.pTel + " ";
-        document.getElementById('t-p-date').firstChild.textContent = t.pDate + " ";
-        document.getElementById('t-p-pass').firstChild.textContent = t.pPass + " ";
-
-        if(userData) renderCalendar(userData.id);
+        for(let i=1; i<=5; i++) { if(document.getElementById('t-back'+i)) document.getElementById('t-back'+i).innerText = t.back; }
     }
-
-    onValue(ref(db, 'settings/background'), snap => { 
-        document.body.style.backgroundImage = snap.exists() && snap.val() !== "" ? `url('${snap.val()}')` : "none";
-    });
-
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
 
     window.showView = id => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
@@ -288,17 +245,7 @@
         const u = document.getElementById('user').value, p = document.getElementById('pass').value;
         if(u === "Admin" && p === "0000") { startApp({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
         const snap = await get(ref(db, 'users/' + u));
-        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else alert(translations[currentLang].alertErr);
-    };
-
-    window.doRegister = async () => {
-        const u = document.getElementById('reg-user').value, p = document.getElementById('reg-pass').value, ph = document.getElementById('reg-phone').value;
-        if(u && p && ph) {
-            const usersSnap = await get(ref(db, 'users'));
-            let nextId = usersSnap.exists() ? Object.keys(usersSnap.val()).length + 1 : 1;
-            await set(ref(db, 'users/' + u), { ism: u, pass: p, tel: ph, id: nextId, joined: "01.05.2026" });
-            alert(translations[currentLang].alertReg); showView('view-auth');
-        } else alert("...");
+        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else alert("Xato!");
     };
 
     function startApp(user) {
@@ -306,18 +253,32 @@
         document.getElementById('prof-name').innerText = user.ism;
         document.getElementById('prof-id').innerText = "ID: " + user.id;
         document.getElementById('prof-pass').innerText = user.pass;
-        
-        const telBox = document.getElementById('prof-tel-box');
-        telBox.innerHTML = user.tel ? `<span style="color: var(--green);">${user.tel}</span>` : `<button class="btn-orange" style="padding:4px 10px; width:auto; font-size:10px; margin:0;" onclick="addPhone()">+</button>`;
-
+        document.getElementById('prof-tel-box').innerText = user.tel || "-";
         if(user.role === 'admin') {
             document.getElementById('admin-tools').classList.remove('hidden');
             document.getElementById('check-in-btn').classList.add('hidden');
+            document.getElementById('t-my-attn').classList.add('hidden');
         } else {
             document.getElementById('admin-tools').classList.add('hidden');
-            renderCalendar('calendar', user.id);
+            document.getElementById('check-in-btn').classList.remove('hidden');
+            document.getElementById('t-my-attn').classList.remove('hidden');
         }
-        updateUI();
+    }
+
+    window.showMyAttendance = () => {
+        showView('view-my-attn');
+        renderCalendar('my-calendar', userData.id);
+        loadMyHistory();
+    };
+
+    async function loadMyHistory() {
+        const snap = await get(ref(db, 'history'));
+        const list = document.getElementById('my-history-list'); list.innerHTML = "";
+        if(snap.exists()) {
+            snap.forEach(c => {
+                if(c.val().id == userData.id) list.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:10px; margin-bottom:5px; font-size:12px; display:flex; justify-content:space-between;"><span>${c.val().sana}</span> <span>${c.val().vaqt}</span></div>`;
+            });
+        }
     }
 
     async function renderCalendar(divId, userId) {
@@ -326,71 +287,32 @@
         const snap = await get(ref(db, 'history'));
         let history = [];
         if(snap.exists()) snap.forEach(c => { if(c.val().id == userId) history.push(c.val().sana); });
-
         cal.innerHTML = t.days.map(d => `<div class="day-name">${d}</div>`).join('');
-        
-        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-        const emptySlots = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; 
-        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-
-        for(let i = 0; i < emptySlots; i++) cal.appendChild(document.createElement('div'));
-        for(let d = 1; d <= daysInMonth; d++) {
-            const dayDiv = document.createElement('div'); 
-            dayDiv.className = 'day'; dayDiv.innerText = d;
-            if(d === now.getDate()) dayDiv.classList.add('today');
+        const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+        const empty = first === 0 ? 6 : first - 1;
+        const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        for(let i=0; i<empty; i++) cal.appendChild(document.createElement('div'));
+        for(let d=1; d<=days; d++) {
+            const div = document.createElement('div'); div.className = 'day'; div.innerText = d;
             const ds = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
-            if(history.includes(ds)) dayDiv.classList.add('present');
-            cal.appendChild(dayDiv);
+            if(d === now.getDate()) div.classList.add('today');
+            if(history.includes(ds)) div.classList.add('present');
+            cal.appendChild(div);
         }
     }
 
     window.doCheckIn = () => {
         const n = new Date(), ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
-        push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: n.toLocaleTimeString() }).then(() => {
-            alert(translations[currentLang].alertIn);
-            renderCalendar('calendar', userData.id);
-        });
+        push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: n.toLocaleTimeString() }).then(() => alert(translations[currentLang].alertIn));
     };
 
-    window.saveCargo = () => { 
-        const n = document.getElementById('cargo-name').value, q = document.getElementById('cargo-qty').value; 
-        if(n && q) push(ref(db, 'cargo'), { nomi: n, miqdori: q, sana: "01.05.2026" }); 
-    };
+    onValue(ref(db, 'settings/news'), snap => {
+        const box = document.getElementById('news-container');
+        if(snap.exists() && snap.val() !== "") { document.getElementById('news-text').innerText = snap.val(); box.classList.remove('hidden'); }
+        else box.classList.add('hidden');
+    });
 
-    window.showUsersList = () => {
-        showView('view-users');
-        onValue(ref(db, 'users'), snap => {
-            const list = document.getElementById('users-list-div'); list.innerHTML = "";
-            snap.forEach(child => {
-                const u = child.val(); if(u.ism === "Admin") return;
-                list.innerHTML += `<div class="list-item"><span>${u.ism}</span><button class="btn-blue" style="padding:8px 15px; width:auto; font-size:11px; margin:0;" onclick="viewUserDetail('${child.key}')">JADVAL</button></div>`;
-            });
-        });
-    };
-
-    window.viewUserDetail = async (userKey) => {
-        const snap = await get(ref(db, 'users/' + userKey));
-        const u = snap.val();
-        document.getElementById('detail-name').innerText = u.ism;
-        document.getElementById('detail-phone-text').innerText = u.tel || "...";
-        showView('view-user-detail');
-        renderCalendar('admin-user-calendar', u.id);
-        
-        const historySnap = await get(ref(db, 'history'));
-        const div = document.getElementById('user-stats-table-div');
-        const t = translations[currentLang];
-        let html = `<table class="stats-table"><thead><tr><th>${t.tableSana}</th><th>${t.tableVaqt}</th><th>${t.tableAmal}</th></tr></thead><tbody>`;
-        if(historySnap.exists()){
-            historySnap.forEach(c => { 
-                if(c.val().id == u.id) html += `<tr><td>${c.val().sana}</td><td>${c.val().vaqt}</td><td><button class="btn-red" style="padding:5px 10px; font-size:9px; margin:0; width:auto;" onclick="deleteLog('${c.key}', '${userKey}')">X</button></td></tr>`;
-            });
-        }
-        div.innerHTML = html + `</tbody></table>`;
-    };
-
-    window.deleteLog = (k, uk) => { if(confirm("?")) remove(ref(db, 'history/' + k)).then(() => viewUserDetail(uk)); };
-    window.uploadBackground = () => { /* ... */ };
-    window.resetBackground = () => set(ref(db, 'settings/background'), "");
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
 </html>
