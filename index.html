@@ -91,7 +91,6 @@
 
         .hidden { display: none !important; }
 
-        /* TOAST ASOSIY DIZAYN (Success holati) */
         #toast {
             visibility: hidden; min-width: 250px; background: linear-gradient(135deg, #00e676, #00c853);
             color: #003300; text-align: center; border-radius: 20px; padding: 16px;
@@ -99,7 +98,6 @@
             transform: translateX(-50%); font-size: 14px; font-weight: 800 !important;
             box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4); border: 2px solid rgba(255,255,255,0.3);
         }
-        /* XATOLIK HOLATI UCHUN QIZIL DIZAYN */
         #toast.error-toast {
             background: linear-gradient(135deg, #ff3d00, #d50000) !important;
             color: #ffffff !important;
@@ -276,7 +274,6 @@
         const t = document.getElementById('toast');
         t.innerText = msg;
         
-        // Agar xatolik bo'lsa, qizil rangli klassni qo'shish
         if(type === 'error' || msg.includes("Xato") || msg.includes("kam")) {
             t.classList.add('error-toast');
             sndError.play();
@@ -343,6 +340,7 @@
         
         document.getElementById('del-acc-btn').onclick = async () => {
             await remove(ref(db, 'users/' + user.ism));
+            sndSuccess.play(); // Hisob o'chirilganda muvaffaqiyatli ovozi
             showToast("O'chirildi");
             window.showUsersList();
         };
@@ -373,6 +371,7 @@
         await remove(ref(db, 'history/' + key));
         const el = document.getElementById('row-' + key);
         if(el) el.remove();
+        sndSuccess.play(); // Davomat o'chirilganda muvaffaqiyatli ovozi
         showToast("O'chirildi");
         renderCalendar('admin-user-calendar', userId);
     };
