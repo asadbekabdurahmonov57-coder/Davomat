@@ -215,6 +215,19 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
     import { getDatabase, ref, set, push, get, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
+    // Audio fayllar
+    const sndClick = new Audio('bosishlar.mp3');
+    const sndSuccess = new Audio('saqlandi.mp3');
+    const sndError = new Audio('xatolik.mp3');
+
+    // Barcha tugmalarga ovoz qo'shish
+    document.addEventListener('click', (e) => {
+        if(e.target.tagName === 'BUTTON') {
+            sndClick.currentTime = 0;
+            sndClick.play();
+        }
+    });
+
     window.addEventListener('load', () => setTimeout(() => { 
         const ss = document.getElementById('splash-screen');
         ss.style.opacity = '0'; 
@@ -251,26 +264,28 @@
         document.getElementById('check-in-btn').innerText = t.checkIn;
     }
 
-    function showToast(msg) {
+    function showToast(msg, type = 'success') {
         const t = document.getElementById('toast');
         t.innerText = msg;
         t.classList.add('show');
+        if(type === 'error') sndError.play();
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
     window.login = async () => {
         const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value.trim();
-        if(!u || !p) return;
+        if(!u || !p) { sndError.play(); return; }
         if(u === "Admin" && p === "0000") { startApp({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
         const snap = await get(ref(db, 'users/' + u));
-        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else showToast("Xato!");
+        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); 
+        else showToast("Xato!", 'error');
     };
 
     window.doRegister = async () => {
         const ism = document.getElementById('reg-user').value.trim();
         const tel = document.getElementById('reg-phone').value.trim();
         const pass = document.getElementById('reg-pass').value.trim();
-        if(!ism || !pass) return showToast("Ma'lumotlar kam!");
+        if(!ism || !pass) return showToast("Ma'lumotlar kam!", 'error');
         const id = Math.floor(1000 + Math.random() * 9000);
         await set(ref(db, 'users/' + ism), { ism, tel, pass, id, role: 'user' });
         showToast("Bajarildi!");
@@ -393,6 +408,7 @@
         const ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
         const vt = n.toLocaleTimeString('it-IT');
         push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: vt }).then(() => {
+            sndSuccess.play(); // Davomat saqlandi tovushi
             showToast(translations[currentLang].alertIn);
             if(userData.role !== 'admin') renderCalendar('my-calendar', userData.id);
         });
