@@ -224,6 +224,7 @@
     // Audio fayllar
     const sndClick = new Audio('bosishlar.mp3');
     const sndSuccess = new Audio('saqlandi.mp3');
+    const sndDelete = new Audio('muvaffaqiyatli.mp3'); // O'chirish uchun maxsus
     const sndError = new Audio('xatolik.mp3');
 
     // Barcha tugmalarga ovoz qo'shish
@@ -340,7 +341,7 @@
         
         document.getElementById('del-acc-btn').onclick = async () => {
             await remove(ref(db, 'users/' + user.ism));
-            sndSuccess.play(); // Hisob o'chirilganda muvaffaqiyatli ovozi
+            sndDelete.play(); // Muvaffaqiyatli o'chirildi ovozi
             showToast("O'chirildi");
             window.showUsersList();
         };
@@ -371,7 +372,7 @@
         await remove(ref(db, 'history/' + key));
         const el = document.getElementById('row-' + key);
         if(el) el.remove();
-        sndSuccess.play(); // Davomat o'chirilganda muvaffaqiyatli ovozi
+        sndDelete.play(); // Muvaffaqiyatli o'chirildi ovozi
         showToast("O'chirildi");
         renderCalendar('admin-user-calendar', userId);
     };
@@ -432,6 +433,7 @@
     window.saveNews = () => {
         const val = document.getElementById('news-input').value;
         set(ref(db, 'settings/news'), val).then(() => { 
+            sndSuccess.play();
             showToast("Saqlandi!"); 
             window.showView('view-main'); 
         });
