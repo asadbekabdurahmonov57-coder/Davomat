@@ -11,42 +11,35 @@
             --glass: rgba(255, 255, 255, 0.08);
             --neon-blue: 0 0 15px rgba(0, 128, 255, 0.4);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 700 !important; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-weight: 700 !important; will-change: transform; }
         
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             background: var(--bg); color: white; 
             font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden;
             background-size: cover; background-position: center;
-            transition: background 0.5s ease;
         }
 
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050510; display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 0.4s ease, visibility 0.4s;
         }
         .splash-logo {
             font-size: 50px; color: var(--blue);
             text-shadow: 0 0 20px rgba(0, 128, 255, 0.6);
-            animation: pulse 1.5s infinite ease-in-out;
+            animation: pulse 1.2s infinite ease-in-out;
             margin-bottom: 20px;
         }
 
         .clock-loader {
-            width: 80px; height: 80px;
-            border: 4px solid var(--blue);
-            border-radius: 50%;
-            position: relative;
-            box-shadow: var(--neon-blue);
+            width: 80px; height: 80px; border: 4px solid var(--blue);
+            border-radius: 50%; position: relative; box-shadow: var(--neon-blue);
         }
         .clock-loader::after, .clock-loader::before {
-            content: ""; position: absolute;
-            background-color: var(--blue);
-            top: 50%; left: 50%;
-            transform-origin: bottom center;
-            border-radius: 2px;
+            content: ""; position: absolute; background-color: var(--blue);
+            top: 50%; left: 50%; transform-origin: bottom center; border-radius: 2px;
         }
         .clock-loader::after { width: 4px; height: 20px; margin-left: -2px; margin-top: -20px; animation: clock-spin 6s linear infinite; }
         .clock-loader::before { width: 2px; height: 30px; margin-left: -1px; margin-top: -30px; animation: clock-spin 1s linear infinite; }
@@ -62,18 +55,18 @@
             background: var(--card); padding: 15px; border-radius: 25px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid var(--glass); 
             text-align: center; margin-bottom: 10px; backdrop-filter: blur(15px);
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        input { width: 100%; padding: 12px; margin: 6px 0; border-radius: 15px; border: 1px solid #2a2a45; background: #000; color: white; font-size: 15px; }
+        input { width: 100%; padding: 12px; margin: 6px 0; border-radius: 15px; border: 1px solid #2a2a45; background: #000; color: white; font-size: 15px; outline: none; }
         button { 
             width: 100%; padding: 14px; margin: 8px 0; border-radius: 18px; border: none; 
-            font-size: 14px; cursor: pointer; transition: 0.3s; color: white; 
+            font-size: 14px; cursor: pointer; transition: 0.2s; color: white; 
             text-transform: uppercase; letter-spacing: 1px;
         }
-        button:active { transform: scale(0.96); }
+        button:active { transform: scale(0.96); opacity: 0.8; }
         
         #check-in-btn {
             width: 150px !important; height: 150px !important; border-radius: 50% !important;
@@ -91,31 +84,34 @@
         #clock { font-size: 45px; color: #00ffb3; margin: 5px 0; text-shadow: 0 0 20px rgba(0,255,179,0.5); }
         
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid var(--glass); }
-        .day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #1a1a35; border-radius: 8px; font-size: 11px; transition: 0.3s; }
+        .day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #1a1a35; border-radius: 8px; font-size: 11px; }
         .day.today { border: 1px solid var(--blue); color: var(--blue); }
         .day.present { background: var(--green); color: #000; }
         .day-name { font-size: 9px; color: #666; text-transform: uppercase; padding-bottom: 3px; }
 
-        .announcement-box { 
-            background: linear-gradient(45deg, rgba(255, 145, 0, 0.1), rgba(0, 128, 255, 0.1));
-            border-left: 4px solid var(--orange); padding: 10px; border-radius: 12px;
-            margin: 10px 0; text-align: left; font-size: 12px;
+        .hidden { display: none !important; }
+
+        #toast {
+            visibility: hidden; min-width: 250px; background: linear-gradient(135deg, #00e676, #00c853);
+            color: #003300; text-align: center; border-radius: 20px; padding: 16px;
+            position: fixed; z-index: 10000; left: 50%; bottom: 40px;
+            transform: translateX(-50%); font-size: 14px; font-weight: 800 !important;
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4); border: 2px solid rgba(255,255,255,0.3);
         }
+        #toast.show { visibility: visible; animation: toastIn 0.5s, toastOut 0.5s 2.5s; }
+        @keyframes toastIn { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+        @keyframes toastOut { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        .stats-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
-        .stats-table td { padding: 8px; background: rgba(255,255,255,0.03); font-size: 12px; border-radius: 10px; }
-
-        .profile-header { display: flex; align-items: center; gap: 15px; text-align: left; margin-bottom: 15px; }
-        .profile-avatar { width: 60px; height: 60px; background: #1a1a35; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; }
-
-        .lang-switch { display: flex; gap: 5px; justify-content: center; margin-bottom: 10px; }
-        .lang-btn { padding: 6px 12px; font-size: 10px; width: auto; border: 1px solid var(--glass); }
-        .lang-btn.active { background: var(--blue) !important; }
-
-        .hidden { display: none; }
+        .del-btn { 
+            background: #ff3d00 !important; width: 30px !important; height: 30px !important; 
+            padding: 0 !important; margin: 0 !important; border-radius: 8px !important; 
+            font-size: 12px !important; display: flex; align-items: center; justify-content: center;
+        }
     </style>
 </head>
 <body>
+
+<div id="toast"></div>
 
 <div id="splash-screen">
     <div class="splash-logo">STATS MB</div>
@@ -126,9 +122,9 @@
 <div class="app-wrapper">
     <div id="view-auth" class="screen">
         <div class="card" style="margin-top: 20px;">
-            <div class="lang-switch">
-                <button id="btn-lat" class="lang-btn active" onclick="setLang('lat')">LOTIN</button>
-                <button id="btn-cyr" class="lang-btn" onclick="setLang('cyr')">КРИЛЛ</button>
+            <div class="lang-switch" style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
+                <button id="btn-lat" class="lang-btn active" style="width: auto; padding: 6px 12px; font-size: 10px;" onclick="setLang('lat')">LOTIN</button>
+                <button id="btn-cyr" class="lang-btn" style="width: auto; padding: 6px 12px; font-size: 10px;" onclick="setLang('cyr')">КРИЛЛ</button>
             </div>
             <h1 style="color: var(--blue); font-size: 30px; margin: 0;">STATS MB</h1>
             <p id="t-auth-p" style="color: #666; margin-bottom: 10px;">Tizimga kiring</p>
@@ -154,14 +150,12 @@
         <div class="card">
             <div id="clock">00:00:00</div>
             <p style="color: #444; font-size: 10px; margin: -5px 0 10px 0; letter-spacing: 1px;">POWERED BY ASADBEK</p>
-            <div id="news-container" class="announcement-box hidden">
+            <div id="news-container" class="announcement-box hidden" style="background: linear-gradient(45deg, rgba(255, 145, 0, 0.1), rgba(0, 128, 255, 0.1)); border-left: 4px solid var(--orange); padding: 10px; border-radius: 12px; margin: 10px 0; text-align: left; font-size: 12px;">
                 <strong id="t-news-label" style="color:var(--orange)">📢 E'LON:</strong>
                 <div id="news-text">...</div>
             </div>
             <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
-            
             <button id="t-my-attn" class="btn-outline" style="border-color: var(--green); color: var(--green);" onclick="showMyAttendance()">DAVOMAT BO'LIMI</button>
-            
             <button id="t-profile-go" class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
             
             <div id="admin-tools" class="hidden" style="margin-top: 15px; border-top: 1px solid #2a2a45; padding-top: 10px;">
@@ -183,39 +177,36 @@
 
     <div id="view-profile" class="screen hidden">
         <div class="card">
-            <div class="profile-header">
-                <div class="profile-avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 70%;"></div>
+            <div class="profile-header" style="display: flex; align-items: center; gap: 15px; text-align: left; margin-bottom: 15px;">
+                <div class="profile-avatar" style="width: 60px; height: 60px; background: #1a1a35; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center;"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 70%;"></div>
                 <div>
                     <h2 id="prof-name" style="margin: 0; color: var(--blue); font-size: 18px;">...</h2>
                     <p id="prof-id" style="margin: 0; color: #888; font-size: 11px;">ID: 0</p>
                 </div>
             </div>
             <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid var(--glass); font-size: 13px;">
-                <p id="t-p-tel">📞 Tel: <span id="prof-tel-box"></span></p>
-                <p id="t-p-pass">🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
+                <p>📞 Tel: <span id="prof-tel-box"></span></p>
+                <p>🔑 Parol: <span id="prof-pass" style="color: var(--orange);"></span></p>
             </div>
-            <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 15px;">ORQAGA</button>
+            <button class="btn-blue" onclick="showView('view-main')" style="margin-top: 15px;">ORQAGA</button>
         </div>
     </div>
 
-    <div id="view-news-edit" class="screen hidden"><div class="card"><h3>E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px;"></textarea><button class="btn-green" onclick="saveNews()">SAQLASH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
+    <div id="view-news-edit" class="screen hidden"><div class="card"><h3>E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px; padding:10px; border:1px solid var(--blue);"></textarea><button class="btn-green" onclick="saveNews()">SAQLASH</button><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
-    <div id="view-users" class="screen hidden">
-        <div class="card">
-            <h3>ISHCHILAR</h3>
-            <div id="users-list-div"></div>
-            <button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button>
-        </div>
-    </div>
+    <div id="view-users" class="screen hidden"><div class="card"><h3>ISHCHILAR</h3><div id="users-list-div"></div><button class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
     <div id="view-user-detail" class="screen hidden">
         <div class="card">
-            <h3 id="detail-name" style="color: var(--blue); margin-bottom: 5px;"></h3>
-            <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin-bottom: 10px;"></div>
+            <div style="display:flex; justify-content: space-between; align-items:center;">
+                <h3 id="detail-name" style="color: var(--blue); margin: 0;"></h3>
+                <button id="del-acc-btn" class="del-btn" style="width: auto !important; padding: 5px 10px !important;">O'CHIRISH</button>
+            </div>
+            <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
             <div class="calendar-grid" id="admin-user-calendar"></div>
             <h4 style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
             <div id="user-stats-table-div" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px;"></div>
-            <button id="t-back4" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
+            <button class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
 </div>
@@ -224,7 +215,11 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
     import { getDatabase, ref, set, push, get, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-    window.addEventListener('load', () => setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.visibility = 'hidden', 800); }, 2000));
+    window.addEventListener('load', () => setTimeout(() => { 
+        const ss = document.getElementById('splash-screen');
+        ss.style.opacity = '0'; 
+        setTimeout(() => ss.style.visibility = 'hidden', 400); 
+    }, 1200));
 
     const firebaseConfig = { apiKey: "AIzaSyA...", authDomain: "stats-mb.firebaseapp.com", databaseURL: "https://stats-mb-default-rtdb.firebaseio.com", projectId: "stats-mb" };
     const app = initializeApp(firebaseConfig);
@@ -237,11 +232,15 @@
         cyr: { authP: "Тизимга киринг", authBtn: "КИРИШ", checkIn: "ИШГА КЕЛДИМ", back: "ОРҚАГА", alertIn: "Қайд этилди!", days: ["Ду","Се","Чо","Па","Жу","Ша","Як"] }
     };
 
+    window.showView = id => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    };
+
     window.setLang = (lang) => { 
         currentLang = lang; 
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        if(lang === 'lat') document.getElementById('btn-lat').classList.add('active');
-        else document.getElementById('btn-cyr').classList.add('active');
+        document.getElementById('btn-' + lang).classList.add('active');
         updateUI(); 
     };
 
@@ -250,155 +249,175 @@
         document.getElementById('t-auth-p').innerText = t.authP;
         document.getElementById('t-auth-btn').innerText = t.authBtn;
         document.getElementById('check-in-btn').innerText = t.checkIn;
-        for(let i=1; i<=5; i++) { if(document.getElementById('t-back'+i)) document.getElementById('t-back'+i).innerText = t.back; }
     }
 
-    window.showView = id => {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-    };
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
 
     window.login = async () => {
-        const u = document.getElementById('user').value, p = document.getElementById('pass').value;
+        const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value.trim();
+        if(!u || !p) return;
         if(u === "Admin" && p === "0000") { startApp({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
         const snap = await get(ref(db, 'users/' + u));
-        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else alert("Xato!");
+        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); else showToast("Xato!");
     };
 
     window.doRegister = async () => {
-        const ism = document.getElementById('reg-user').value;
-        const tel = document.getElementById('reg-phone').value;
-        const pass = document.getElementById('reg-pass').value;
-        if(!ism || !pass) return alert("To'ldiring!");
+        const ism = document.getElementById('reg-user').value.trim();
+        const tel = document.getElementById('reg-phone').value.trim();
+        const pass = document.getElementById('reg-pass').value.trim();
+        if(!ism || !pass) return showToast("Ma'lumotlar kam!");
         const id = Math.floor(1000 + Math.random() * 9000);
         await set(ref(db, 'users/' + ism), { ism, tel, pass, id, role: 'user' });
-        alert("Tayyor! Login: " + ism);
-        showView('view-auth');
+        showToast("Bajarildi!");
+        window.showView('view-auth');
     };
 
     function startApp(user) {
-        userData = user; showView('view-main');
+        userData = user; 
+        window.showView('view-main');
         document.getElementById('prof-name').innerText = user.ism;
         document.getElementById('prof-id').innerText = "ID: " + user.id;
         document.getElementById('prof-pass').innerText = user.pass;
         document.getElementById('prof-tel-box').innerText = user.tel || "-";
-        if(user.role === 'admin') {
-            document.getElementById('admin-tools').classList.remove('hidden');
-            document.getElementById('check-in-btn').classList.add('hidden');
-            document.getElementById('t-my-attn').classList.add('hidden');
-        } else {
-            document.getElementById('admin-tools').classList.add('hidden');
-            document.getElementById('check-in-btn').classList.remove('hidden');
-            document.getElementById('t-my-attn').classList.remove('hidden');
-        }
+        
+        const isAdmin = user.role === 'admin';
+        document.getElementById('admin-tools').classList.toggle('hidden', !isAdmin);
+        document.getElementById('check-in-btn').classList.toggle('hidden', isAdmin);
+        document.getElementById('t-my-attn').classList.toggle('hidden', isAdmin);
     }
 
     window.showUsersList = async () => {
-        showView('view-users');
+        window.showView('view-users');
         const snap = await get(ref(db, 'users'));
         const div = document.getElementById('users-list-div');
-        div.innerHTML = "";
+        let html = "";
         if(snap.exists()){
             snap.forEach(u => {
                 const d = u.val();
-                if(d.role !== 'admin'){
-                    const b = document.createElement('button');
-                    b.className = "btn-outline";
-                    b.style.marginBottom = "5px";
-                    b.innerText = d.ism;
-                    b.onclick = () => showUserDetail(d);
-                    div.appendChild(b);
-                }
+                if(d.role !== 'admin') html += `<button class="btn-outline" style="margin-bottom:5px;" onclick='showUserDetail(${JSON.stringify(d)})'>${d.ism}</button>`;
             });
         }
+        div.innerHTML = html;
     };
 
-    async function showUserDetail(user) {
-        showView('view-user-detail');
+    window.showUserDetail = async (user) => {
+        window.showView('view-user-detail');
         document.getElementById('detail-name').innerText = user.ism;
+        document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">🔑 Parol: <span style="color:var(--orange)">${user.pass}</span></p><p style="margin:2px 0;">📞 Tel: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
         
-        // Parol va Tel ma'lumotlarini ko'rsatish
-        document.getElementById('user-info-box').innerHTML = `
-            <p style="margin:2px 0;">🔑 Parol: <span style="color:var(--orange)">${user.pass}</span></p>
-            <p style="margin:2px 0;">📞 Tel: ${user.tel || 'Kiritilmagan'}</p>
-            <p style="margin:2px 0;">🆔 ID: ${user.id}</p>
-        `;
-        
+        document.getElementById('del-acc-btn').onclick = async () => {
+            await remove(ref(db, 'users/' + user.ism));
+            showToast("O'chirildi");
+            window.showUsersList();
+        };
+
         renderCalendar('admin-user-calendar', user.id);
-        
-        // Ishchining aniq vaqtlarini yuklash
+        loadUserHistory(user);
+    };
+
+    async function loadUserHistory(user) {
         const histSnap = await get(ref(db, 'history'));
-        const tableDiv = document.getElementById('user-stats-table-div');
-        tableDiv.innerHTML = "";
+        let rows = "";
         if(histSnap.exists()){
             histSnap.forEach(h => {
                 const val = h.val();
-                if(val.id == user.id){
-                    tableDiv.innerHTML += `
-                        <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
-                            <span>📅 ${val.sana}</span>
-                            <span style="color:var(--green)">⏰ ${val.vaqt}</span>
-                        </div>
-                    `;
+                const key = h.key;
+                if(val.id == user.id) {
+                    rows = `<div id="row-${key}" style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
+                        <span>📅 ${val.sana} ⏰ ${val.vaqt}</span>
+                        <button class="del-btn" onclick="deleteHistoryItem('${key}', '${user.id}')">X</button>
+                    </div>` + rows;
                 }
             });
         }
-        if(tableDiv.innerHTML === "") tableDiv.innerHTML = "<p style='font-size:12px; opacity:0.5;'>Hali davomat yo'q</p>";
+        document.getElementById('user-stats-table-div').innerHTML = rows || "<p style='font-size:12px; opacity:0.5;'>Yo'q</p>";
     }
 
-    window.saveNews = () => {
-        const val = document.getElementById('news-input').value;
-        set(ref(db, 'settings/news'), val).then(() => { alert("Saqlandi"); showView('view-main'); });
+    window.deleteHistoryItem = async (key, userId) => {
+        await remove(ref(db, 'history/' + key));
+        const el = document.getElementById('row-' + key);
+        if(el) el.remove();
+        showToast("O'chirildi");
+        renderCalendar('admin-user-calendar', userId);
     };
 
     window.showMyAttendance = () => {
-        showView('view-my-attn');
+        window.showView('view-my-attn');
         renderCalendar('my-calendar', userData.id);
         loadMyHistory();
     };
 
     async function loadMyHistory() {
         const snap = await get(ref(db, 'history'));
-        const list = document.getElementById('my-history-list'); list.innerHTML = "";
+        let html = "";
         if(snap.exists()) {
             snap.forEach(c => {
-                if(c.val().id == userData.id) list.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:10px; margin-bottom:5px; font-size:12px; display:flex; justify-content:space-between;"><span>${c.val().sana}</span> <span>${c.val().vaqt}</span></div>`;
+                const v = c.val();
+                if(v.id == userData.id) html = `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:10px; margin-bottom:5px; font-size:12px; display:flex; justify-content:space-between;"><span>${v.sana}</span> <span>${v.vaqt}</span></div>` + html;
             });
         }
+        document.getElementById('my-history-list').innerHTML = html;
     }
 
     async function renderCalendar(divId, userId) {
-        const cal = document.getElementById(divId); if(!cal) return;
+        const cal = document.getElementById(divId);
+        if(!cal) return;
         const now = new Date(), t = translations[currentLang];
         const snap = await get(ref(db, 'history'));
-        let history = [];
-        if(snap.exists()) snap.forEach(c => { if(c.val().id == userId) history.push(c.val().sana); });
-        cal.innerHTML = t.days.map(d => `<div class="day-name">${d}</div>`).join('');
+        let historySet = new Set();
+        if(snap.exists()) snap.forEach(c => { if(c.val().id == userId) historySet.add(c.val().sana); });
+
+        let html = t.days.map(d => `<div class="day-name">${d}</div>`).join('');
         const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
         const empty = first === 0 ? 6 : first - 1;
-        const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-        for(let i=0; i<empty; i++) cal.appendChild(document.createElement('div'));
-        for(let d=1; d<=days; d++) {
-            const div = document.createElement('div'); div.className = 'day'; div.innerText = d;
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+        for(let i=0; i<empty; i++) html += `<div></div>`;
+        for(let d=1; d<=daysInMonth; d++) {
             const ds = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
-            if(d === now.getDate()) div.classList.add('today');
-            if(history.includes(ds)) div.classList.add('present');
-            cal.appendChild(div);
+            let cls = 'day';
+            if(d === now.getDate()) cls += ' today';
+            if(historySet.has(ds)) cls += ' present';
+            html += `<div class="${cls}">${d}</div>`;
         }
+        cal.innerHTML = html;
     }
 
     window.doCheckIn = () => {
-        const n = new Date(), ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
-        push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: n.toLocaleTimeString() }).then(() => alert(translations[currentLang].alertIn));
+        const n = new Date();
+        const ds = `${n.getFullYear()}-${(n.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
+        const vt = n.toLocaleTimeString('it-IT');
+        push(ref(db, 'history'), { id: userData.id, ism: userData.ism, sana: ds, vaqt: vt }).then(() => {
+            showToast(translations[currentLang].alertIn);
+            if(userData.role !== 'admin') renderCalendar('my-calendar', userData.id);
+        });
+    };
+
+    window.saveNews = () => {
+        const val = document.getElementById('news-input').value;
+        set(ref(db, 'settings/news'), val).then(() => { 
+            showToast("Saqlandi!"); 
+            window.showView('view-main'); 
+        });
     };
 
     onValue(ref(db, 'settings/news'), snap => {
         const box = document.getElementById('news-container');
-        if(snap.exists() && snap.val() !== "") { document.getElementById('news-text').innerText = snap.val(); box.classList.remove('hidden'); }
-        else box.classList.add('hidden');
+        if(snap.exists() && snap.val() !== "") { 
+            document.getElementById('news-text').innerText = snap.val(); 
+            box.classList.remove('hidden'); 
+        } else box.classList.add('hidden');
     });
 
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    setInterval(() => { 
+        const clockEl = document.getElementById('clock');
+        if(clockEl) clockEl.innerText = new Date().toLocaleTimeString('it-IT'); 
+    }, 1000);
 </script>
 </body>
 </html>
