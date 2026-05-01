@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>STATS MB - Ultimate Admin</title>
+    <script>
+        const sndLoading = new Audio('yuklash.mp3');
+        sndLoading.loop = true;
+        // Brauzer ruxsat bersa darhol ijro etish
+        sndLoading.play().catch(() => {
+            // Agar autoplay bloklansa, foydalanuvchi ekranga birinchi marta teginishi bilan boshlanadi
+            document.addEventListener('touchstart', () => sndLoading.play(), {once: true});
+            document.addEventListener('click', () => sndLoading.play(), {once: true});
+        });
+    </script>
     <style>
         :root {
             --bg: #050510; --card: #12122b; --blue: #0080ff;
@@ -221,33 +231,19 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
     import { getDatabase, ref, set, push, get, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-    // Audio fayllar
-    const sndLoading = new Audio('yuklash.mp3'); // Yuklanish uchun
+    // Audio fayllar (sndLoading yuqorida aniqlangan)
     const sndClick = new Audio('bosishlar.mp3');
     const sndSuccess = new Audio('saqlandi.mp3');
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
 
-    // Yuklash ovozini sozlash
-    sndLoading.loop = true;
-
     window.addEventListener('load', () => {
-        // Sahifa yuklanishi bilan ovozni boshlash (brauzer ruxsat bersa)
-        const playPromise = sndLoading.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                // Avtomatik ijro bloklansa, foydalanuvchi interaksiyasini kutish shart emas 
-                // chunki splash screen vaqtida odatda ruxsat bo'lmaydi
-                console.log("Autoplay bloklandi");
-            });
-        }
-
         setTimeout(() => { 
             const ss = document.getElementById('splash-screen');
             ss.style.opacity = '0'; 
             setTimeout(() => {
                 ss.style.visibility = 'hidden';
-                sndLoading.pause(); // Yuklanish oynasi yopilgach ovozni to'xtatish
+                sndLoading.pause(); // To'xtatish
                 sndLoading.currentTime = 0;
             }, 400); 
         }, 1200);
