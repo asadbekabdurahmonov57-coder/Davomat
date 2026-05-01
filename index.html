@@ -248,7 +248,7 @@
     const sndSuccess = new Audio('saqlandi.mp3');
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
-    const sndTick = new Audio('soniya.mp3'); // Yangi qo'shilgan soniya ovozi
+    const sndTick = new Audio('soniya.mp3'); 
 
     window.addEventListener('load', () => {
         setTimeout(() => { 
@@ -479,9 +479,11 @@
         const clockEl = document.getElementById('clock');
         if(clockEl) {
             clockEl.innerText = new Date().toLocaleTimeString('it-IT'); 
-            // Har bir soniya o'zgarganda ovoz chalish:
-            sndTick.currentTime = 0;
-            sndTick.play().catch(() => { /* Brauzer cheklovi uchun bo'sh */ });
+            // FAQAT foydalanuvchi login qilsa ovoz chiqadi:
+            if(userData) {
+                sndTick.currentTime = 0;
+                sndTick.play().catch(() => {});
+            }
         }
     }, 1000);
 </script>
