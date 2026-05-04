@@ -277,6 +277,14 @@
     const sndError = new Audio('xatolik.mp3');
 
     window.addEventListener('load', () => {
+        // Xotiradan parolni tekshirish
+        const savedUser = localStorage.getItem('stats_user');
+        const savedPass = localStorage.getItem('stats_pass');
+        if(savedUser && savedPass) {
+            document.getElementById('user').value = savedUser;
+            document.getElementById('pass').value = savedPass;
+        }
+
         setTimeout(() => { 
             const ss = document.getElementById('splash-screen');
             ss.style.opacity = '0'; 
@@ -388,9 +396,17 @@
     window.login = async () => {
         const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value.trim();
         if(!u || !p) { sndError.play(); return; }
-        if(u === "Admin" && p === "0000") { startApp({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
+        
+        const processLogin = (data) => {
+            // Muvaffaqiyatli kirsa xotiraga saqlaymiz
+            localStorage.setItem('stats_user', u);
+            localStorage.setItem('stats_pass', p);
+            startApp(data);
+        };
+
+        if(u === "Admin" && p === "0000") { processLogin({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
         const snap = await get(ref(db, 'users/' + u));
-        if(snap.exists() && snap.val().pass === p) startApp(snap.val()); 
+        if(snap.exists() && snap.val().pass === p) processLogin(snap.val()); 
         else showToast("Xato!", 'error');
     };
 
