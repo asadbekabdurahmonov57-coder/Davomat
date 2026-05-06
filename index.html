@@ -140,7 +140,6 @@
             font-size: 12px !important; display: flex; align-items: center; justify-content: center;
         }
 
-        /* E'LONNING SURILISHI UCHUN STIL */
         #news-container {
             display: flex;
             align-items: center;
@@ -157,7 +156,7 @@
         #news-text {
             display: inline-block;
             padding-left: 100%;
-            animation: marquee 25s linear infinite; /* Tezlik sekinlashtirildi */
+            animation: marquee 25s linear infinite;
         }
         @keyframes marquee {
             0% { transform: translateX(0); }
@@ -212,11 +211,13 @@
             </div>
             <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
             <button id="t-my-attn" class="btn-outline" style="border-color: var(--green); color: var(--green);" onclick="showMyAttendance()">DAVOMAT BO'LIMI</button>
+            
+            <button id="t-all-users" class="btn-orange" style="background: linear-gradient(135deg, #ff9100, #ff6d00); color: #fff;" onclick="showUsersList()">ISHCHILAR DAVOMATI</button>
+            
             <button id="t-profile-go" class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
             
             <div id="admin-tools" class="hidden" style="margin-top: 15px; border-top: 1px solid #2a2a45; padding-top: 10px;">
                 <button id="t-admin-news" class="btn-green" onclick="showView('view-news-edit')">E'LON QOLDIRISH</button>
-                <button id="t-admin-users" class="btn-orange" onclick="showUsersList()">ISHCHILAR (DAVOMAT)</button>
             </div>
             <button id="t-logout" class="btn-red" onclick="location.reload()">CHIQISH</button>
         </div>
@@ -277,7 +278,6 @@
     const sndError = new Audio('xatolik.mp3');
 
     window.addEventListener('load', () => {
-        // Xotiradan parolni tekshirish
         const savedUser = localStorage.getItem('stats_user');
         const savedPass = localStorage.getItem('stats_pass');
         if(savedUser && savedPass) {
@@ -312,14 +312,14 @@
     const translations = {
         lat: { 
             authP: "Tizimga kiring", authBtn: "KIRISH", checkIn: "ISHGA KELDIM", back: "ORQAGA", alertIn: "Qayd etildi!", days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"],
-            regGo: "RO'YXATDAN O'TISH", regH2: "YANGI HISOB", regBtn: "YARATISH", myAttn: "DAVOMAT BO'LIMI", profGo: "MENING PROFILIM", adminNews: "E'LON QOLDIRISH", adminUsers: "ISHCHILAR (DAVOMAT)", logout: "CHIQISH",
+            regGo: "RO'YXATDAN O'TISH", regH2: "YANGI HISOB", regBtn: "YARATISH", myAttn: "DAVOMAT BO'LIMI", profGo: "MENING PROFILIM", adminNews: "E'LON QOLDIRISH", adminUsers: "ISHCHILAR DAVOMATI", logout: "CHIQISH",
             myAttnTitle: "MENING DAVOMATIM", profTel: "📞 Tel", profPass: "🔑 Parol", newsH3: "E'LON", save: "SAQLASH", usersH3: "ISHCHILAR", visitH4: "KELGAN VAQTLARI:", del: "O'CHIRISH", newsLabel: "📢 E'LON:",
             p_user: "Login", p_pass: "Parol", p_name: "Ism sharif", p_phone: "Telefon raqam", toast_err: "Xato!", toast_low: "Ma'lumotlar kam!", toast_done: "Bajarildi!", toast_save: "Saqlandi!", toast_del: "O'chirildi", toast_time: "KELGAN VAQTI:"
         },
         cyr: { 
             authP: "Тизимга киринг", authBtn: "КИРИШ", checkIn: "ИШГА КЕЛДИМ", back: "ОРҚАГА", alertIn: "Қайд этилди!", days: ["Ду","Се","Чо","Па","Жу","Ша","Як"],
-            regGo: "РЎЙХАТДАН ЎТИШ", regH2: "ЯНГИ ҲИСОБ", regBtn: "ЯРАТИШ", myAttn: "ДАВОМАТ БЎЛИМИ", profGo: "МЕНИНГ ПРОФИЛИМ", adminNews: "ЭЪЛОН ҚОЛДИРИШ", adminUsers: "ИШЧИЛАР (ДАВОМАТ)", logout: "ЧИҚИШ",
-            myAttnTitle: "МЕНИНГ ДАВОМАТИМ", profTel: "📞 Тел", profPass: "🔑 Парол", newsH3: "ЭЪЛОН", save: "САҚЛАШ", usersH3: "ИШЧИЛАР", visitH4: "КЕЛГАН ВАҚТЛАРИ:", del: "ЎЧИРИШ", newsLabel: "📢 ЭЪЛОН:",
+            regGo: "РЎЙХАТДАН ЎТИШ", regH2: "ЯНГИ ҲИСОБ", regBtn: "ЯРАТИШ", myAttn: "ДАВОМАТ БЎЛИМИ", profGo: "МЕНИНГ ПРОФИЛИМ", adminNews: "ЭЪЛОН ҚОЛДИРИШ", adminUsers: "ИШЧИЛАР ДАВОМАТИ", logout: "ЧИҚИШ",
+            myAttnTitle: "МЕНИНГ ДАВОМАТИМ", profTel: "📞 Тел", profPass: "🔑 Парол", newsH3: "ЭЪЛОН", save: "Сақлаш", usersH3: "ИШЧИЛАР", visitH4: "КЕЛГАН ВАҚТЛАРИ:", del: "ЎЧИРИШ", newsLabel: "📢 ЭЪЛОН:",
             p_user: "Логин", p_pass: "Парол", p_name: "Исм шариф", p_phone: "Телефон рақам", toast_err: "Хато!", toast_low: "Маълумотlar кам!", toast_done: "Бажарилди!", toast_save: "Сақланди!", toast_del: "Ўчирилди", toast_time: "КЕЛГАН ВАҚТИ:"
         }
     };
@@ -353,7 +353,7 @@
         document.getElementById('t-my-attn').innerText = t.myAttn;
         document.getElementById('t-profile-go').innerText = t.profGo;
         document.getElementById('t-admin-news').innerText = t.adminNews;
-        document.getElementById('t-admin-users').innerText = t.adminUsers;
+        document.getElementById('t-all-users').innerText = t.adminUsers;
         document.getElementById('t-logout').innerText = t.logout;
         document.getElementById('t-news-label').innerHTML = t.newsLabel;
         document.getElementById('t-my-attn-title').innerText = t.myAttnTitle;
@@ -398,7 +398,6 @@
         if(!u || !p) { sndError.play(); return; }
         
         const processLogin = (data) => {
-            // Muvaffaqiyatli kirsa xotiraga saqlaymiz
             localStorage.setItem('stats_user', u);
             localStorage.setItem('stats_pass', p);
             startApp(data);
@@ -451,13 +450,22 @@
     window.showUserDetail = async (user) => {
         window.showView('view-user-detail');
         const t = translations[currentLang];
+        const isAdmin = userData.role === 'admin';
+        
         document.getElementById('detail-name').innerText = user.ism;
         document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${user.pass}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
-        document.getElementById('del-acc-btn').onclick = async () => {
-            await remove(ref(db, 'users/' + user.ism));
-            sndDelete.play(); 
-            showToast("O'chirildi");
-            window.showUsersList();
+        
+        // O'chirish tugmasini faqat adminga ko'rsatamiz
+        const delBtn = document.getElementById('del-acc-btn');
+        delBtn.style.display = isAdmin ? 'block' : 'none';
+
+        delBtn.onclick = async () => {
+            if(isAdmin) {
+                await remove(ref(db, 'users/' + user.ism));
+                sndDelete.play(); 
+                showToast("O'chirildi");
+                window.showUsersList();
+            }
         };
         renderCalendar('admin-user-calendar', user.id);
         loadUserHistory(user);
@@ -465,15 +473,19 @@
 
     async function loadUserHistory(user) {
         const histSnap = await get(ref(db, 'history'));
+        const isAdmin = userData.role === 'admin';
         let rows = "";
         if(histSnap.exists()){
             histSnap.forEach(h => {
                 const val = h.val();
                 const key = h.key;
                 if(val.id == user.id) {
+                    // Faqat admin uchun o'chirish tugmasi (X) chiqadi
+                    const delBtnHtml = isAdmin ? `<button class="del-btn" onclick="deleteHistoryItem('${key}', '${user.id}')">X</button>` : '';
+                    
                     rows = `<div id="row-${key}" style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
                         <span>📅 ${val.sana} ⏰ ${val.vaqt}</span>
-                        <button class="del-btn" onclick="deleteHistoryItem('${key}', '${user.id}')">X</button>
+                        ${delBtnHtml}
                     </div>` + rows;
                 }
             });
@@ -482,12 +494,14 @@
     }
 
     window.deleteHistoryItem = async (key, userId) => {
-        await remove(ref(db, 'history/' + key));
-        const el = document.getElementById('row-' + key);
-        if(el) el.remove();
-        sndDelete.play(); 
-        showToast("O'chirildi");
-        renderCalendar('admin-user-calendar', userId);
+        if(userData.role === 'admin') {
+            await remove(ref(db, 'history/' + key));
+            const el = document.getElementById('row-' + key);
+            if(el) el.remove();
+            sndDelete.play(); 
+            showToast("O'chirildi");
+            renderCalendar('admin-user-calendar', userId);
+        }
     };
 
     window.showMyAttendance = () => {
