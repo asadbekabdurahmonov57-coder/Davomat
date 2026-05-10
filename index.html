@@ -141,20 +141,31 @@
         }
 
         #news-container {
-            display: flex;
-            align-items: center;
+            display: block;
             overflow: hidden;
-            white-space: nowrap;
             position: relative;
+        }
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
         }
         #t-news-label {
             position: relative;
             z-index: 2;
-            background: var(--card);
-            padding-right: 10px;
+            background: transparent;
+        }
+        #news-views-box {
+            font-size: 10px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 3px;
         }
         #news-text {
             display: inline-block;
+            white-space: nowrap;
             padding-left: 100%;
             animation: marquee 25s linear infinite;
         }
@@ -206,7 +217,10 @@
             <div id="clock">00:00:00</div>
             <p style="color: #444; font-size: 10px; margin: -5px 0 10px 0; letter-spacing: 1px;">POWERED BY ASADBEK</p>
             <div id="news-container" class="announcement-box hidden" style="background: linear-gradient(45deg, rgba(255, 145, 0, 0.1), rgba(0, 128, 255, 0.1)); border-left: 4px solid var(--orange); padding: 10px; border-radius: 12px; margin: 10px 0; text-align: left; font-size: 12px;">
-                <strong id="t-news-label" style="color:var(--orange)">📢 E'LON:</strong>
+                <div class="news-header">
+                    <strong id="t-news-label" style="color:var(--orange)">📢 E'LON:</strong>
+                    <span id="news-views-box">👁️ <span id="news-views-count">0</span></span>
+                </div>
                 <div id="news-text">...</div>
             </div>
             <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
@@ -431,6 +445,14 @@
         document.getElementById('admin-tools').classList.toggle('hidden', !isAdmin);
         document.getElementById('check-in-btn').classList.toggle('hidden', isAdmin);
         document.getElementById('t-my-attn').classList.toggle('hidden', isAdmin);
+        
+        // E'lonni ko'rganini hisoblash
+        if(user.role !== 'admin') {
+            get(ref(db, 'settings/news_views')).then(snap => {
+                let views = snap.val() || 0;
+                set(ref(db, 'settings/news_views'), views + 1);
+            });
+        }
     }
 
     window.showUsersList = async () => {
@@ -455,7 +477,6 @@
         document.getElementById('detail-name').innerText = user.ism;
         document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${user.pass}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
         
-        // O'chirish tugmasini faqat adminga ko'rsatamiz
         const delBtn = document.getElementById('del-acc-btn');
         delBtn.style.display = isAdmin ? 'block' : 'none';
 
@@ -480,7 +501,6 @@
                 const val = h.val();
                 const key = h.key;
                 if(val.id == user.id) {
-                    // Faqat admin uchun o'chirish tugmasi (X) chiqadi
                     const delBtnHtml = isAdmin ? `<button class="del-btn" onclick="deleteHistoryItem('${key}', '${user.id}')">X</button>` : '';
                     
                     rows = `<div id="row-${key}" style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
@@ -567,6 +587,7 @@
     window.saveNews = () => {
         const val = document.getElementById('news-input').value;
         set(ref(db, 'settings/news'), val).then(() => { 
+            set(ref(db, 'settings/news_views'), 0); // Yangi xabar bo'lsa hisoblagichni 0 qilish
             sndSuccess.play();
             showToast("Saqlandi!"); 
             window.showView('view-main'); 
@@ -579,6 +600,10 @@
             document.getElementById('news-text').innerText = snap.val(); 
             box.classList.remove('hidden'); 
         } else box.classList.add('hidden');
+    });
+
+    onValue(ref(db, 'settings/news_views'), snap => {
+        document.getElementById('news-views-count').innerText = snap.val() || 0;
     });
 
     setInterval(() => { 
