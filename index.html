@@ -446,11 +446,21 @@
         document.getElementById('check-in-btn').classList.toggle('hidden', isAdmin);
         document.getElementById('t-my-attn').classList.toggle('hidden', isAdmin);
         
-        // E'lonni ko'rganini hisoblash
+        // E'lonni ko'rganini faqat 1 marta hisoblash
         if(user.role !== 'admin') {
-            get(ref(db, 'settings/news_views')).then(snap => {
-                let views = snap.val() || 0;
-                set(ref(db, 'settings/news_views'), views + 1);
+            get(ref(db, 'settings/news')).then(newsSnap => {
+                const currentNews = newsSnap.val() || "";
+                const viewedNews = localStorage.getItem('viewed_news_text');
+
+                // Agar e'lon bor bo'lsa va bu foydalanuvchi uni hali ko'rmagan bo'lsa
+                if (currentNews !== "" && viewedNews !== currentNews) {
+                    get(ref(db, 'settings/news_views')).then(snap => {
+                        let views = snap.val() || 0;
+                        set(ref(db, 'settings/news_views'), views + 1);
+                        // LocalStorage ga ushbu matnni ko'rildi deb belgilaymiz
+                        localStorage.setItem('viewed_news_text', currentNews);
+                    });
+                }
             });
         }
     }
