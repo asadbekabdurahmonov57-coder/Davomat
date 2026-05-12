@@ -140,10 +140,10 @@
             font-size: 12px !important; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- SKROLLBAR CHIZIG'I (YANADA QALIN VA KO'ZGA TASHALANUVCHAN) --- */
+        /* --- SKROLLBAR CHIZIG'I --- */
         #user-stats-table-div::-webkit-scrollbar,
         #my-history-list::-webkit-scrollbar {
-            width: 20px; /* Qalinligi 20px qilindi */
+            width: 20px;
             display: block !important;
         }
         #user-stats-table-div::-webkit-scrollbar-track,
@@ -154,7 +154,7 @@
         #user-stats-table-div::-webkit-scrollbar-thumb {
             background: var(--blue);
             border-radius: 10px;
-            border: 4px solid #12122b; /* Trackdan ajralib turishi uchun */
+            border: 4px solid #12122b;
             box-shadow: 0 0 12px var(--blue);
         }
         #my-history-list::-webkit-scrollbar-thumb {
@@ -163,7 +163,6 @@
             border: 4px solid #12122b;
             box-shadow: 0 0 12px var(--green);
         }
-        /* ------------------------------------------------------------- */
 
         #news-container {
             display: block;
@@ -198,6 +197,9 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
+
+        /* Gorizontal surishni vertikalga o'tkazish uchun yordamchi klass */
+        .swipe-area { touch-action: pan-x; }
     </style>
 </head>
 <body>
@@ -211,6 +213,7 @@
 </div>
 
 <div class="app-wrapper">
+    <!-- Auth View -->
     <div id="view-auth" class="screen">
         <div class="card" style="margin-top: 20px;">
             <div class="lang-switch" style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
@@ -226,6 +229,7 @@
         </div>
     </div>
 
+    <!-- Reg View -->
     <div id="view-reg" class="screen hidden">
         <div class="card">
             <h2 id="t-reg-h2" style="color: var(--orange); margin: 0 0 10px 0;">YANGI HISOB</h2>
@@ -237,6 +241,7 @@
         </div>
     </div>
 
+    <!-- Main View -->
     <div id="view-main" class="screen hidden">
         <div class="card">
             <div id="clock">00:00:00</div>
@@ -250,11 +255,8 @@
             </div>
             <button class="btn-green" id="check-in-btn" onclick="doCheckIn()">ISHGA KELDIM</button>
             <button id="t-my-attn" class="btn-outline" style="border-color: var(--green); color: var(--green);" onclick="showMyAttendance()">DAVOMAT BO'LIMI</button>
-            
             <button id="t-all-users" class="btn-orange" style="background: linear-gradient(135deg, #ff9100, #ff6d00); color: #fff;" onclick="showUsersList()">ISHCHILAR DAVOMATI</button>
-            
             <button id="t-profile-go" class="btn-blue" onclick="showView('view-profile')">MENING PROFILIM</button>
-            
             <div id="admin-tools" class="hidden" style="margin-top: 15px; border-top: 1px solid #2a2a45; padding-top: 10px;">
                 <button id="t-admin-news" class="btn-green" onclick="showView('view-news-edit')">E'LON QOLDIRISH</button>
             </div>
@@ -262,15 +264,18 @@
         </div>
     </div>
 
+    <!-- My Attendance View -->
     <div id="view-my-attn" class="screen hidden">
         <div class="card">
             <h3 id="t-my-attn-title" style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
             <div class="calendar-grid" id="my-calendar"></div>
-            <div id="my-history-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
+            <!-- Swipe Area Enabled -->
+            <div id="my-history-list" class="swipe-area" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
             <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
 
+    <!-- Profile View -->
     <div id="view-profile" class="screen hidden">
         <div class="card">
             <div class="profile-header" style="display: flex; align-items: center; gap: 15px; text-align: left; margin-bottom: 15px;">
@@ -288,10 +293,13 @@
         </div>
     </div>
 
+    <!-- News Edit View -->
     <div id="view-news-edit" class="screen hidden"><div class="card"><h3 id="t-news-h3">E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px; padding:10px; border:1px solid var(--blue);"></textarea><button id="t-save" class="btn-green" onclick="saveNews()">SAQLASH</button><button id="t-back4" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
+    <!-- Users List View -->
     <div id="view-users" class="screen hidden"><div class="card"><h3 id="t-users-h3">ISHCHILAR</h3><div id="users-list-div"></div><button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
+    <!-- User Detail View -->
     <div id="view-user-detail" class="screen hidden">
         <div class="card">
             <div style="display:flex; justify-content: space-between; align-items:center;">
@@ -301,7 +309,8 @@
             <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
             <div class="calendar-grid" id="admin-user-calendar"></div>
             <h4 id="t-visit-h4" style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
-            <div id="user-stats-table-div" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px; scrollbar-width: thin;"></div>
+            <!-- Swipe Area Enabled -->
+            <div id="user-stats-table-div" class="swipe-area" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px; scrollbar-width: thin;"></div>
             <button id="t-back6" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
@@ -316,6 +325,25 @@
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
 
+    // Gorizontal surishni vertikal skrollga aylantiruvchi yordamchi funksiya
+    function enableSwipeToScroll(elementId) {
+        const el = document.getElementById(elementId);
+        let startX = 0;
+        let startScrollTop = 0;
+
+        el.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startScrollTop = el.scrollTop;
+        }, { passive: true });
+
+        el.addEventListener('touchmove', (e) => {
+            let moveX = e.touches[0].clientX;
+            let diffX = startX - moveX;
+            // Chapga/O'ngga surilganda diffX ni vertikal scrollTop ga qo'shamiz
+            el.scrollTop = startScrollTop + diffX;
+        }, { passive: true });
+    }
+
     window.addEventListener('load', () => {
         const savedUser = localStorage.getItem('stats_user');
         const savedPass = localStorage.getItem('stats_pass');
@@ -323,6 +351,10 @@
             document.getElementById('user').value = savedUser;
             document.getElementById('pass').value = savedPass;
         }
+
+        // Swipe funksiyasini faollashtirish
+        enableSwipeToScroll('my-history-list');
+        enableSwipeToScroll('user-stats-table-div');
 
         setTimeout(() => { 
             const ss = document.getElementById('splash-screen');
@@ -471,18 +503,14 @@
         document.getElementById('check-in-btn').classList.toggle('hidden', isAdmin);
         document.getElementById('t-my-attn').classList.toggle('hidden', isAdmin);
         
-        // E'lonni ko'rganini faqat 1 marta hisoblash
         if(user.role !== 'admin') {
             get(ref(db, 'settings/news')).then(newsSnap => {
                 const currentNews = newsSnap.val() || "";
                 const viewedNews = localStorage.getItem('viewed_news_text');
-
-                // Agar e'lon bor bo'lsa va bu foydalanuvchi uni hali ko'rmagan bo'lsa
                 if (currentNews !== "" && viewedNews !== currentNews) {
                     get(ref(db, 'settings/news_views')).then(snap => {
                         let views = snap.val() || 0;
                         set(ref(db, 'settings/news_views'), views + 1);
-                        // LocalStorage ga ushbu matnni ko'rildi deb belgilaymiz
                         localStorage.setItem('viewed_news_text', currentNews);
                     });
                 }
@@ -507,32 +535,38 @@
     window.showUserDetail = async (username) => {
         window.showView('view-user-detail');
         const t = translations[currentLang];
+        
+        // Kim ko'rayotgani (Adminmi yoki yo'q?)
         const isAdmin = userData.role === 'admin';
         
         const snap = await get(ref(db, 'users/' + username));
         if(!snap.exists()) return;
-        const user = snap.val();
+        const targetUser = snap.val();
 
-        document.getElementById('detail-name').innerText = user.ism;
+        document.getElementById('detail-name').innerText = targetUser.ism;
         
-        // XAVFSIZLIK: Faqat Admin hamma parolni ko'radi, boshqalar parolni ko'rolmaydi (hatto o'zinikini ham bu bo'limda ko'rolmaydi)
-        const passToShow = isAdmin ? user.pass : '****';
+        // MANTIQ: Faqat Admin bo'lsa yoki Foydalanuvchi o'z profilini ko'rayotgan bo'lsa parolni ko'rsatish
+        const isSelf = userData.ism === targetUser.ism;
+        const passToShow = (isAdmin || isSelf) ? targetUser.pass : '****';
         
-        document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${passToShow}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
+        document.getElementById('user-info-box').innerHTML = `
+            <p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${passToShow}</span></p>
+            <p style="margin:2px 0;">${t.profTel}: ${targetUser.tel || '—'}</p>
+            <p style="margin:2px 0;">🆔 ID: ${targetUser.id}</p>`;
         
         const delBtn = document.getElementById('del-acc-btn');
         delBtn.style.display = isAdmin ? 'block' : 'none';
 
         delBtn.onclick = async () => {
             if(isAdmin) {
-                await remove(ref(db, 'users/' + user.ism));
+                await remove(ref(db, 'users/' + targetUser.ism));
                 sndDelete.play(); 
                 showToast("O'chirildi");
                 window.showUsersList();
             }
         };
-        renderCalendar('admin-user-calendar', user.id);
-        loadUserHistory(user);
+        renderCalendar('admin-user-calendar', targetUser.id);
+        loadUserHistory(targetUser);
     };
 
     async function loadUserHistory(user) {
@@ -545,7 +579,6 @@
                 const key = h.key;
                 if(val.id == user.id) {
                     const delBtnHtml = isAdmin ? `<button class="del-btn" onclick="deleteHistoryItem('${key}', '${user.id}')">X</button>` : '';
-                    
                     rows = `<div id="row-${key}" style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
                         <span>📅 ${val.sana} ⏰ ${val.vaqt}</span>
                         ${delBtnHtml}
