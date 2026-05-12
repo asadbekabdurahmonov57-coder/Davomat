@@ -140,35 +140,30 @@
             font-size: 12px !important; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Skrollbar chizig'i qalinlashtirildi va ushlash qulay qilindi */
-        #user-stats-table-div::-webkit-scrollbar {
-            width: 14px;
+        /* --- SKROLLBAR CHIZIG'I (YANADA QALIN VA KO'ZGA TASHALANUVCHAN) --- */
+        #user-stats-table-div::-webkit-scrollbar,
+        #my-history-list::-webkit-scrollbar {
+            width: 20px; /* Qalinligi 20px qilindi */
             display: block !important;
         }
-        #user-stats-table-div::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+        #user-stats-table-div::-webkit-scrollbar-track,
+        #my-history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
         #user-stats-table-div::-webkit-scrollbar-thumb {
             background: var(--blue);
             border-radius: 10px;
-            border: 3px solid #12122b; /* Track orasida ko'rinishi uchun */
-            box-shadow: 0 0 8px var(--blue);
-        }
-        /* My Attendance uchun ham qalinroq skrollbar */
-        #my-history-list::-webkit-scrollbar {
-            width: 14px;
-            display: block !important;
-        }
-        #my-history-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+            border: 4px solid #12122b; /* Trackdan ajralib turishi uchun */
+            box-shadow: 0 0 12px var(--blue);
         }
         #my-history-list::-webkit-scrollbar-thumb {
             background: var(--green);
             border-radius: 10px;
-            border: 3px solid #12122b;
+            border: 4px solid #12122b;
+            box-shadow: 0 0 12px var(--green);
         }
+        /* ------------------------------------------------------------- */
 
         #news-container {
             display: block;
