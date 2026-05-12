@@ -473,19 +473,29 @@
         if(snap.exists()){
             snap.forEach(u => {
                 const d = u.val();
-                if(d.role !== 'admin') html += `<button class="btn-outline" style="margin-bottom:5px;" onclick='showUserDetail(${JSON.stringify(d)})'>${d.ism}</button>`;
+                // O'zgarish: Ma'lumotlarni string qilib yubormaymiz, faqat Ism (ID kalit) yuboramiz
+                if(d.role !== 'admin') html += `<button class="btn-outline" style="margin-bottom:5px;" onclick="showUserDetail('${d.ism}')">${d.ism}</button>`;
             });
         }
         div.innerHTML = html;
     };
 
-    window.showUserDetail = async (user) => {
+    window.showUserDetail = async (username) => {
         window.showView('view-user-detail');
         const t = translations[currentLang];
         const isAdmin = userData.role === 'admin';
         
+        // O'zgarish: Bazadan foydalanuvchini ismiga qarab qayta o'qiymiz
+        const snap = await get(ref(db, 'users/' + username));
+        if(!snap.exists()) return;
+        const user = snap.val();
+
         document.getElementById('detail-name').innerText = user.ism;
-        document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${user.pass}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
+        
+        // O'zgarish: Agar kirgan odam admin bo'lmasa, parol o'rniga yulduzchalar ko'rsatiladi
+        const passToShow = isAdmin ? user.pass : '****';
+        
+        document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${passToShow}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
         
         const delBtn = document.getElementById('del-acc-btn');
         delBtn.style.display = isAdmin ? 'block' : 'none';
