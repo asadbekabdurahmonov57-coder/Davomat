@@ -140,6 +140,21 @@
             font-size: 12px !important; display: flex; align-items: center; justify-content: center;
         }
 
+        /* 1000248267.jpg rasmda chizilgan joy uchun scrollbar dizayni */
+        #user-stats-table-div::-webkit-scrollbar {
+            width: 6px;
+            display: block !important;
+        }
+        #user-stats-table-div::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        #user-stats-table-div::-webkit-scrollbar-thumb {
+            background: var(--blue);
+            border-radius: 10px;
+            box-shadow: 0 0 5px var(--blue);
+        }
+
         #news-container {
             display: block;
             overflow: hidden;
@@ -276,7 +291,7 @@
             <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
             <div class="calendar-grid" id="admin-user-calendar"></div>
             <h4 id="t-visit-h4" style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
-            <div id="user-stats-table-div" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px;"></div>
+            <div id="user-stats-table-div" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px; scrollbar-width: thin;"></div>
             <button id="t-back6" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
@@ -473,7 +488,6 @@
         if(snap.exists()){
             snap.forEach(u => {
                 const d = u.val();
-                // O'zgarish: Ma'lumotlarni string qilib yubormaymiz, faqat Ism (ID kalit) yuboramiz
                 if(d.role !== 'admin') html += `<button class="btn-outline" style="margin-bottom:5px;" onclick="showUserDetail('${d.ism}')">${d.ism}</button>`;
             });
         }
@@ -485,14 +499,13 @@
         const t = translations[currentLang];
         const isAdmin = userData.role === 'admin';
         
-        // O'zgarish: Bazadan foydalanuvchini ismiga qarab qayta o'qiymiz
         const snap = await get(ref(db, 'users/' + username));
         if(!snap.exists()) return;
         const user = snap.val();
 
         document.getElementById('detail-name').innerText = user.ism;
         
-        // O'zgarish: Agar kirgan odam admin bo'lmasa, parol o'rniga yulduzchalar ko'rsatiladi
+        // XAVFSIZLIK: Faqat Admin hamma parolni ko'radi, boshqalar parolni ko'rolmaydi (hatto o'zinikini ham bu bo'limda ko'rolmaydi)
         const passToShow = isAdmin ? user.pass : '****';
         
         document.getElementById('user-info-box').innerHTML = `<p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${passToShow}</span></p><p style="margin:2px 0;">${t.profTel}: ${user.tel || '—'}</p><p style="margin:2px 0;">🆔 ID: ${user.id}</p>`;
@@ -607,7 +620,7 @@
     window.saveNews = () => {
         const val = document.getElementById('news-input').value;
         set(ref(db, 'settings/news'), val).then(() => { 
-            set(ref(db, 'settings/news_views'), 0); // Yangi xabar bo'lsa hisoblagichni 0 qilish
+            set(ref(db, 'settings/news_views'), 0); 
             sndSuccess.play();
             showToast("Saqlandi!"); 
             window.showView('view-main'); 
@@ -635,3 +648,4 @@
 </script>
 </body>
 </html>
+
