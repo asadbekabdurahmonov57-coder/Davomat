@@ -153,14 +153,13 @@
             padding-left: 5px;
         }
 
-        /* YONBOSH SCROLLBARLAR OLIB TASHLANDI */
+        /* SCROLLBARLAR VIZUAL OLIB TASHLANDI */
         #user-stats-table-div::-webkit-scrollbar,
         #my-history-list::-webkit-scrollbar {
             display: none !important;
         }
         #user-stats-table-div, #my-history-list {
             scrollbar-width: none;
-            -ms-overflow-style: none;
         }
 
         #news-container {
@@ -197,7 +196,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        .swipe-area { touch-action: pan-x; } /* Faqat gorizontal surishga ruxsat */
+        .swipe-area { touch-action: pan-x; }
     </style>
 </head>
 <body>
@@ -211,7 +210,6 @@
 </div>
 
 <div class="app-wrapper">
-    <!-- Auth, Reg, Main, Profile screens (kod o'zgarishsiz qoldi) -->
     <div id="view-auth" class="screen">
         <div class="card" style="margin-top: 20px;">
             <div class="lang-switch" style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
@@ -298,7 +296,7 @@
             <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
             <div class="calendar-grid" id="admin-user-calendar"></div>
             <h4 id="t-visit-h4">KELGAN VAQTLARI:</h4>
-            <div id="user-stats-table-div" class="swipe-area" style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px;"></div>
+            <div id="user-stats-table-div" class="swipe-area" style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px; scrollbar-width: none;"></div>
             <button id="t-back6" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
@@ -313,7 +311,7 @@
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
 
-    // CHAPDAN O'NGGA SURIB TEPAGA PASTGA SCROLL QILISH FUNKSIYASI
+    // SURISH ORQALI VERTIKAL SCROLL QILISH
     function enableSwipeToScroll(elementId) {
         const el = document.getElementById(elementId);
         let startX = 0;
@@ -324,7 +322,6 @@
         }, { passive: true });
         el.addEventListener('touchmove', (e) => {
             let moveX = e.touches[0].clientX;
-            // Chapdan o'ngga surish (farqi) vertikal scrollga o'tkaziladi
             let diffX = startX - moveX;
             el.scrollTop = startScrollTop + diffX;
         }, { passive: true });
@@ -607,15 +604,13 @@
         const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
         for(let i=0; i<empty; i++) html += `<div></div>`;
         for(let d=1; d<=daysInMonth; d++) {
-            const ds = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${n.getDate().toString().padStart(2,'0')}`;
-            // (Yuqoridagi qatorda xatolik bor edi, tuzatildi: n -> now)
-            const dss = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
+            const ds = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${d.toString().padStart(2,'0')}`;
             let cls = 'day';
             let clickAttr = "";
             if(d === now.getDate()) cls += ' today';
-            if(historyData[dss]) {
+            if(historyData[ds]) {
                 cls += ' present';
-                clickAttr = `onclick="window.showToast('KELGAN VAQTI: ${historyData[dss]}')"`;
+                clickAttr = `onclick="window.showToast('KELGAN VAQTI: ${historyData[ds]}')"`;
             }
             html += `<div class="${cls}" ${clickAttr}>${d}</div>`;
         }
