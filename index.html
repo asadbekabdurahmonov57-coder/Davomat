@@ -135,12 +135,24 @@
         @keyframes toastOut { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
         .del-btn { 
-            background: #ff3d00 !important; width: 30px !important; height: 30px !important; 
-            padding: 0 !important; margin: 0 !important; border-radius: 8px !important; 
-            font-size: 12px !important; display: flex; align-items: center; justify-content: center;
+            background: #ff3d00 !important; width: 22px !important; height: 22px !important; 
+            padding: 0 !important; margin: 0 !important; border-radius: 5px !important; 
+            font-size: 10px !important; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- SKROLLBAR CHIZIG'I --- */
+        #user-stats-table-div span {
+            font-size: 10px !important;
+            color: #ccc;
+        }
+
+        #t-visit-h4 {
+            margin: 10px 0 5px 0 !important; 
+            font-size: 11px !important; 
+            color: #888;
+            text-align: left;
+            padding-left: 5px;
+        }
+
         #user-stats-table-div::-webkit-scrollbar,
         #my-history-list::-webkit-scrollbar {
             width: 20px;
@@ -198,7 +210,6 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* Gorizontal surishni vertikalga o'tkazish uchun yordamchi klass */
         .swipe-area { touch-action: pan-x; }
     </style>
 </head>
@@ -213,7 +224,6 @@
 </div>
 
 <div class="app-wrapper">
-    <!-- Auth View -->
     <div id="view-auth" class="screen">
         <div class="card" style="margin-top: 20px;">
             <div class="lang-switch" style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
@@ -229,7 +239,6 @@
         </div>
     </div>
 
-    <!-- Reg View -->
     <div id="view-reg" class="screen hidden">
         <div class="card">
             <h2 id="t-reg-h2" style="color: var(--orange); margin: 0 0 10px 0;">YANGI HISOB</h2>
@@ -241,7 +250,6 @@
         </div>
     </div>
 
-    <!-- Main View -->
     <div id="view-main" class="screen hidden">
         <div class="card">
             <div id="clock">00:00:00</div>
@@ -264,18 +272,15 @@
         </div>
     </div>
 
-    <!-- My Attendance View -->
     <div id="view-my-attn" class="screen hidden">
         <div class="card">
             <h3 id="t-my-attn-title" style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
             <div class="calendar-grid" id="my-calendar"></div>
-            <!-- Swipe Area Enabled -->
             <div id="my-history-list" class="swipe-area" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
             <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
 
-    <!-- Profile View -->
     <div id="view-profile" class="screen hidden">
         <div class="card">
             <div class="profile-header" style="display: flex; align-items: center; gap: 15px; text-align: left; margin-bottom: 15px;">
@@ -293,13 +298,9 @@
         </div>
     </div>
 
-    <!-- News Edit View -->
     <div id="view-news-edit" class="screen hidden"><div class="card"><h3 id="t-news-h3">E'LON</h3><textarea id="news-input" style="width:100%; height:80px; background:#000; color:#fff; border-radius:10px; padding:10px; border:1px solid var(--blue);"></textarea><button id="t-save" class="btn-green" onclick="saveNews()">SAQLASH</button><button id="t-back4" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
-    
-    <!-- Users List View -->
     <div id="view-users" class="screen hidden"><div class="card"><h3 id="t-users-h3">ISHCHILAR</h3><div id="users-list-div"></div><button id="t-back5" class="btn-blue" onclick="showView('view-main')">ORQAGA</button></div></div>
     
-    <!-- User Detail View -->
     <div id="view-user-detail" class="screen hidden">
         <div class="card">
             <div style="display:flex; justify-content: space-between; align-items:center;">
@@ -308,9 +309,8 @@
             </div>
             <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
             <div class="calendar-grid" id="admin-user-calendar"></div>
-            <h4 id="t-visit-h4" style="margin: 15px 0 5px 0; font-size: 14px;">KELGAN VAQTLARI:</h4>
-            <!-- Swipe Area Enabled -->
-            <div id="user-stats-table-div" class="swipe-area" style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px; scrollbar-width: thin;"></div>
+            <h4 id="t-visit-h4">KELGAN VAQTLARI:</h4>
+            <div id="user-stats-table-div" class="swipe-area" style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 5px; scrollbar-width: thin;"></div>
             <button id="t-back6" class="btn-blue" onclick="showView('view-users')" style="margin-top: 10px;">ORQAGA</button>
         </div>
     </div>
@@ -325,21 +325,17 @@
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
 
-    // Gorizontal surishni vertikal skrollga aylantiruvchi yordamchi funksiya
     function enableSwipeToScroll(elementId) {
         const el = document.getElementById(elementId);
         let startX = 0;
         let startScrollTop = 0;
-
         el.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
             startScrollTop = el.scrollTop;
         }, { passive: true });
-
         el.addEventListener('touchmove', (e) => {
             let moveX = e.touches[0].clientX;
             let diffX = startX - moveX;
-            // Chapga/O'ngga surilganda diffX ni vertikal scrollTop ga qo'shamiz
             el.scrollTop = startScrollTop + diffX;
         }, { passive: true });
     }
@@ -351,11 +347,8 @@
             document.getElementById('user').value = savedUser;
             document.getElementById('pass').value = savedPass;
         }
-
-        // Swipe funksiyasini faollashtirish
         enableSwipeToScroll('my-history-list');
         enableSwipeToScroll('user-stats-table-div');
-
         setTimeout(() => { 
             const ss = document.getElementById('splash-screen');
             ss.style.opacity = '0'; 
@@ -467,13 +460,11 @@
     window.login = async () => {
         const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value.trim();
         if(!u || !p) { sndError.play(); return; }
-        
         const processLogin = (data) => {
             localStorage.setItem('stats_user', u);
             localStorage.setItem('stats_pass', p);
             startApp(data);
         };
-
         if(u === "Admin" && p === "0000") { processLogin({ism: "Admin", id: "0", role: "admin", pass: "0000"}); return; }
         const snap = await get(ref(db, 'users/' + u));
         if(snap.exists() && snap.val().pass === p) processLogin(snap.val()); 
@@ -502,7 +493,6 @@
         document.getElementById('admin-tools').classList.toggle('hidden', !isAdmin);
         document.getElementById('check-in-btn').classList.toggle('hidden', isAdmin);
         document.getElementById('t-my-attn').classList.toggle('hidden', isAdmin);
-        
         if(user.role !== 'admin') {
             get(ref(db, 'settings/news')).then(newsSnap => {
                 const currentNews = newsSnap.val() || "";
@@ -535,28 +525,19 @@
     window.showUserDetail = async (username) => {
         window.showView('view-user-detail');
         const t = translations[currentLang];
-        
-        // Kim ko'rayotgani (Adminmi yoki yo'q?)
         const isAdmin = userData.role === 'admin';
-        
         const snap = await get(ref(db, 'users/' + username));
         if(!snap.exists()) return;
         const targetUser = snap.val();
-
         document.getElementById('detail-name').innerText = targetUser.ism;
-        
-        // MANTIQ: Faqat Admin bo'lsa yoki Foydalanuvchi o'z profilini ko'rayotgan bo'lsa parolni ko'rsatish
         const isSelf = userData.ism === targetUser.ism;
         const passToShow = (isAdmin || isSelf) ? targetUser.pass : '****';
-        
         document.getElementById('user-info-box').innerHTML = `
             <p style="margin:2px 0;">${t.profPass}: <span style="color:var(--orange)">${passToShow}</span></p>
             <p style="margin:2px 0;">${t.profTel}: ${targetUser.tel || '—'}</p>
             <p style="margin:2px 0;">🆔 ID: ${targetUser.id}</p>`;
-        
         const delBtn = document.getElementById('del-acc-btn');
         delBtn.style.display = isAdmin ? 'block' : 'none';
-
         delBtn.onclick = async () => {
             if(isAdmin) {
                 await remove(ref(db, 'users/' + targetUser.ism));
@@ -579,14 +560,14 @@
                 const key = h.key;
                 if(val.id == user.id) {
                     const delBtnHtml = isAdmin ? `<button class="del-btn" onclick="deleteHistoryItem('${key}', '${user.id}')">X</button>` : '';
-                    rows = `<div id="row-${key}" style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px;">
+                    rows = `<div id="row-${key}" style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:10px;">
                         <span>📅 ${val.sana} ⏰ ${val.vaqt}</span>
                         ${delBtnHtml}
                     </div>` + rows;
                 }
             });
         }
-        document.getElementById('user-stats-table-div').innerHTML = rows || "<p style='font-size:12px; opacity:0.5;'>-</p>";
+        document.getElementById('user-stats-table-div').innerHTML = rows || "<p style='font-size:10px; opacity:0.5;'>-</p>";
     }
 
     window.deleteHistoryItem = async (key, userId) => {
