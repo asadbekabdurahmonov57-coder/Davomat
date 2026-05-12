@@ -140,9 +140,9 @@
             font-size: 12px !important; display: flex; align-items: center; justify-content: center;
         }
 
-        /* 1000248267.jpg rasmda chizilgan joy uchun scrollbar dizayni */
+        /* Skrollbar chizig'i qalinlashtirildi va ushlash qulay qilindi */
         #user-stats-table-div::-webkit-scrollbar {
-            width: 6px;
+            width: 14px;
             display: block !important;
         }
         #user-stats-table-div::-webkit-scrollbar-track {
@@ -152,7 +152,22 @@
         #user-stats-table-div::-webkit-scrollbar-thumb {
             background: var(--blue);
             border-radius: 10px;
-            box-shadow: 0 0 5px var(--blue);
+            border: 3px solid #12122b; /* Track orasida ko'rinishi uchun */
+            box-shadow: 0 0 8px var(--blue);
+        }
+        /* My Attendance uchun ham qalinroq skrollbar */
+        #my-history-list::-webkit-scrollbar {
+            width: 14px;
+            display: block !important;
+        }
+        #my-history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        #my-history-list::-webkit-scrollbar-thumb {
+            background: var(--green);
+            border-radius: 10px;
+            border: 3px solid #12122b;
         }
 
         #news-container {
@@ -648,4 +663,3 @@
 </script>
 </body>
 </html>
-
