@@ -153,7 +153,6 @@
             padding-left: 5px;
         }
 
-        /* SCROLLBARLAR VIZUAL OLIB TASHLANDI */
         #user-stats-table-div::-webkit-scrollbar,
         #my-history-list::-webkit-scrollbar {
             display: none !important;
@@ -198,7 +197,6 @@
 
         .swipe-area { touch-action: pan-x; }
 
-        /* RASM YUKLASH BLOAGI USLUBI */
         .photo-upload-box {
             background: rgba(0, 0, 0, 0.3);
             border: 2px dashed var(--orange);
@@ -231,6 +229,12 @@
 
 <div id="toast"></div>
 
+<!-- RASMNI KATTALASHTIRIB KO'RSATUVCHI MODAL (TELEGRAM STILIDA) -->
+<div id="image-modal" onclick="closeImageModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+    <div style="position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold;">&times;</div>
+    <img id="modal-img" src="" onclick="event.stopPropagation()" style="max-width: 90%; max-height: 80%; border-radius: 15px; box-shadow: 0 0 40px rgba(0, 128, 255, 0.4); object-fit: contain; transform: scale(0.8); transition: transform 0.3s ease;">
+</div>
+
 <div id="splash-screen">
     <div class="splash-logo">STATS MB</div>
     <div class="clock-loader"></div>
@@ -257,7 +261,6 @@
         <div class="card">
             <h2 id="t-reg-h2" style="color: var(--orange); margin: 0 0 10px 0;">YANGI HISOB</h2>
             
-            <!-- RASM YUKLASH BO'LIMI (KAMERA VA GALEREYA) -->
             <label for="reg-photo-input" class="photo-upload-box">
                 <img id="reg-photo-preview" class="photo-preview-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Foto">
                 <span style="font-size: 11px; color: #bbb; line-height: 1.3;">amaliyotchining kameraga qarab tushgan rasmi</span>
@@ -298,7 +301,6 @@
         <div class="card">
             <h3 id="t-my-attn-title" style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
             
-            <!-- FOYDALANUVCHILAR UCHUN O'TGAN KUNLARNI QO'SHISH BO'LIMI -->
             <div style="margin: 10px 0; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px solid var(--glass);">
                 <div style="display: flex; gap: 5px;">
                     <input type="date" id="manual-date" style="flex: 1; margin: 0; font-size: 12px; padding: 8px;">
@@ -364,7 +366,26 @@
 
     let regPhotoBase64 = "";
 
-    // RASMNI TANIASH VA SIQIB O'LCHAMINI KICHIKLASHTIRISH FUNKSIYASI
+    // MODAL FUNKSIYALARI
+    window.openImageModal = (src) => {
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        modalImg.src = src;
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            modalImg.style.transform = 'scale(1)';
+        }, 10);
+    };
+
+    window.closeImageModal = () => {
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        modal.style.opacity = '0';
+        modalImg.style.transform = 'scale(0.8)';
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+    };
+
     window.previewRegPhoto = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -373,7 +394,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const max_size = 300; // Bazani og'irlashtirmaslik uchun rasm o'lchami optimal 300px qilinadi
+                    const max_size = 300; 
                     let width = img.width;
                     let height = img.height;
                     if (width > height) {
@@ -394,7 +415,6 @@
         }
     };
 
-    // SURISH ORQALI VERTIKAL SCROLL QILISH
     function enableSwipeToScroll(elementId) {
         const el = document.getElementById(elementId);
         let startX = 0;
@@ -610,7 +630,18 @@
         if(!snap.exists()) return;
         const targetUser = snap.val();
         document.getElementById('detail-name').innerText = targetUser.ism;
-        document.getElementById('detail-user-img').src = targetUser.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        
+        // RASM BOSILISH MANTIG'I SHU YERDA
+        const detailImg = document.getElementById('detail-user-img');
+        detailImg.src = targetUser.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        if(isAdmin && targetUser.photo) {
+            detailImg.style.cursor = 'pointer';
+            detailImg.onclick = () => window.openImageModal(targetUser.photo);
+        } else {
+            detailImg.style.cursor = 'default';
+            detailImg.onclick = null;
+        }
+
         const isSelf = userData.ism === targetUser.ism;
         const passToShow = (isAdmin || isSelf) ? targetUser.pass : '****';
         document.getElementById('user-info-box').innerHTML = `
@@ -722,7 +753,6 @@
         });
     };
 
-    // FOYDALANUVCHILAR UCHUN O'TGAN KUN DAVOMATINI MANUALLY QO'SHISH FUNKSIYASI
     window.doManualCheckIn = () => {
         const dateVal = document.getElementById('manual-date').value;
         let timeVal = document.getElementById('manual-time').value;
