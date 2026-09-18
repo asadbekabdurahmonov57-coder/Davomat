@@ -223,16 +223,59 @@
             margin-bottom: 6px;
             box-shadow: 0 0 10px rgba(255, 145, 0, 0.3);
         }
+
+        /* MODAL VA ZOOM BOSHQARUV USLUBI */
+        #modal-img-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 25px;
+            display: flex;
+            gap: 12px;
+            z-index: 10002;
+            background: rgba(0,0,0,0.6);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--glass);
+        }
+        .zoom-btn {
+            width: 38px !important;
+            height: 38px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-radius: 50% !important;
+            background: var(--card) !important;
+            border: 1px solid var(--blue) !important;
+            font-size: 18px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff !important;
+        }
     </style>
 </head>
 <body>
 
 <div id="toast"></div>
 
-<!-- RASMNI KATTALASHTIRIB KO'RSATUVCHI MODAL (TELEGRAM STILIDA) -->
-<div id="image-modal" onclick="closeImageModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
-    <div style="position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold;">&times;</div>
-    <img id="modal-img" src="" onclick="event.stopPropagation()" style="max-width: 90%; max-height: 80%; border-radius: 15px; box-shadow: 0 0 40px rgba(0, 128, 255, 0.4); object-fit: contain; transform: scale(0.8); transition: transform 0.3s ease;">
+<!-- RASMNI KATTALASHTIRIB KO'RSATUVCHI MODAL (ZOOM FUNKSIYASI BILAN) -->
+<div id="image-modal" onclick="closeImageModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 10001; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+    <div style="position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; z-index: 10002;">&times;</div>
+    <div id="modal-img-container" onclick="event.stopPropagation()">
+        <img id="modal-img" src="" style="max-width: 90%; max-height: 80%; border-radius: 15px; box-shadow: 0 0 40px rgba(0, 128, 255, 0.4); object-fit: contain; transform-origin: center center; cursor: grab;">
+    </div>
+    <div class="zoom-controls" onclick="event.stopPropagation()">
+        <button class="zoom-btn" onclick="zoomImage(0.25)">+</button>
+        <button class="zoom-btn" onclick="zoomImage(-0.25)">-</button>
+        <button class="zoom-btn" onclick="resetZoom()">↺</button>
+    </div>
 </div>
 
 <div id="splash-screen">
@@ -366,26 +409,130 @@
 
     let regPhotoBase64 = "";
 
-    // MODAL FUNKSIYALARI
+    // MODAL VA QO'LDA ZOOM/PAN MANUSI
+    let imgScale = 1;
+    let imgPosX = 0;
+    let imgPosY = 0;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialPinchDist = 0;
+
+    function applyImageTransform() {
+        const modalImg = document.getElementById('modal-img');
+        if (modalImg) {
+            modalImg.style.transform = `translate(${imgPosX}px, ${imgPosY}px) scale(${imgScale})`;
+        }
+    }
+
     window.openImageModal = (src) => {
         const modal = document.getElementById('image-modal');
         const modalImg = document.getElementById('modal-img');
         modalImg.src = src;
+        imgScale = 1;
+        imgPosX = 0;
+        imgPosY = 0;
+        applyImageTransform();
         modal.style.display = 'flex';
         setTimeout(() => {
             modal.style.opacity = '1';
-            modalImg.style.transform = 'scale(1)';
         }, 10);
     };
 
     window.closeImageModal = () => {
         const modal = document.getElementById('image-modal');
-        const modalImg = document.getElementById('modal-img');
         modal.style.opacity = '0';
-        modalImg.style.transform = 'scale(0.8)';
         setTimeout(() => { modal.style.display = 'none'; }, 300);
     };
 
+    window.zoomImage = (amount) => {
+        imgScale = Math.min(Math.max(0.8, imgScale + amount), 5);
+        if(imgScale === 1) { imgPosX = 0; imgPosY = 0; }
+        applyImageTransform();
+    };
+
+    window.resetZoom = () => {
+        imgScale = 1;
+        imgPosX = 0;
+        imgPosY = 0;
+        applyImageTransform();
+    };
+
+    // Sichqoncha va Sensor (Touch) orqali surish hamda kattalashtirish Hodisalari
+    const imgContainer = document.getElementById('modal-img-container');
+    const modalImg = document.getElementById('modal-img');
+
+    imgContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.2 : -0.2;
+        window.zoomImage(delta);
+    }, { passive: false });
+
+    imgContainer.addEventListener('mousedown', (e) => {
+        if (imgScale > 1) {
+            isDragging = true;
+            startX = e.clientX - imgPosX;
+            startY = e.clientY - imgPosY;
+            modalImg.style.cursor = 'grabbing';
+        }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (isDragging && imgScale > 1) {
+            imgPosX = e.clientX - startX;
+            imgPosY = e.clientY - startY;
+            applyImageTransform();
+        }
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
+        if (modalImg) modalImg.style.cursor = 'grab';
+    });
+
+    imgContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1 && imgScale > 1) {
+            isDragging = true;
+            startX = e.touches[0].clientX - imgPosX;
+            startY = e.touches[0].clientY - imgPosY;
+        } else if (e.touches.length === 2) {
+            isDragging = false;
+            initialPinchDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+        }
+    }, { passive: true });
+
+    imgContainer.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches.length === 1 && imgScale > 1) {
+            imgPosX = e.touches[0].clientX - startX;
+            imgPosY = e.touches[0].clientY - startY;
+            applyImageTransform();
+        } else if (e.touches.length === 2) {
+            const currentDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            if (initialPinchDist > 0) {
+                const diff = (currentDist - initialPinchDist) / 150;
+                imgScale = Math.min(Math.max(0.8, imgScale + diff), 5);
+                applyImageTransform();
+                initialPinchDist = currentDist;
+            }
+        }
+    }, { passive: true });
+
+    imgContainer.addEventListener('touchend', () => {
+        isDragging = false;
+        initialPinchDist = 0;
+    });
+
+    modalImg.addEventListener('dblclick', () => {
+        if (imgScale > 1) window.resetZoom();
+        else window.zoomImage(1.5);
+    });
+
+    // RASMNI YUQORI SIFATDA SIQISH (BLUR BO'LMASLIGI UCHUN 800PX)
     window.previewRegPhoto = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -394,7 +541,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const max_size = 300; 
+                    const max_size = 800; // Sifat yaxshilanishi uchun 800px qilindi
                     let width = img.width;
                     let height = img.height;
                     if (width > height) {
@@ -406,7 +553,7 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    regPhotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    regPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
                     document.getElementById('reg-photo-preview').src = regPhotoBase64;
                 };
                 img.src = evt.target.result;
@@ -631,7 +778,6 @@
         const targetUser = snap.val();
         document.getElementById('detail-name').innerText = targetUser.ism;
         
-        // RASM BOSILISH MANTIG'I SHU YERDA
         const detailImg = document.getElementById('detail-user-img');
         detailImg.src = targetUser.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
         if(isAdmin && targetUser.photo) {
