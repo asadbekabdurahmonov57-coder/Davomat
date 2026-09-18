@@ -197,6 +197,34 @@
         }
 
         .swipe-area { touch-action: pan-x; }
+
+        /* RASM YUKLASH BLOAGI USLUBI */
+        .photo-upload-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed var(--orange);
+            border-radius: 20px;
+            padding: 12px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .photo-upload-box:active {
+            transform: scale(0.98);
+            background: rgba(255, 145, 0, 0.1);
+        }
+        .photo-preview-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--orange);
+            margin-bottom: 6px;
+            box-shadow: 0 0 10px rgba(255, 145, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -228,6 +256,14 @@
     <div id="view-reg" class="screen hidden">
         <div class="card">
             <h2 id="t-reg-h2" style="color: var(--orange); margin: 0 0 10px 0;">YANGI HISOB</h2>
+            
+            <!-- RASM YUKLASH BO'LIMI (KAMERA VA GALEREYA) -->
+            <label for="reg-photo-input" class="photo-upload-box">
+                <img id="reg-photo-preview" class="photo-preview-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Foto">
+                <span style="font-size: 11px; color: #bbb; line-height: 1.3;">amaliyotchining kameraga qarab tushgan rasmi</span>
+            </label>
+            <input type="file" id="reg-photo-input" accept="image/*" style="display: none;" onchange="previewRegPhoto(event)">
+
             <input type="text" id="reg-user" placeholder="Ism sharif">
             <input type="tel" id="reg-phone" placeholder="Telefon raqam">
             <input type="password" id="reg-pass" placeholder="Parol">
@@ -280,7 +316,9 @@
     <div id="view-profile" class="screen hidden">
         <div class="card">
             <div class="profile-header" style="display: flex; align-items: center; gap: 15px; text-align: left; margin-bottom: 15px;">
-                <div class="profile-avatar" style="width: 60px; height: 60px; background: #1a1a35; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center;"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 70%;"></div>
+                <div class="profile-avatar" style="width: 60px; height: 60px; background: #1a1a35; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    <img id="prof-avatar-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div>
                     <h2 id="prof-name" style="margin: 0; color: var(--blue); font-size: 18px;">...</h2>
                     <p id="prof-id" style="margin: 0; color: #888; font-size: 11px;">ID: 0</p>
@@ -300,7 +338,10 @@
     <div id="view-user-detail" class="screen hidden">
         <div class="card">
             <div style="display:flex; justify-content: space-between; align-items:center;">
-                <h3 id="detail-name" style="color: var(--blue); margin: 0;"></h3>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img id="detail-user-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--blue);">
+                    <h3 id="detail-name" style="color: var(--blue); margin: 0;"></h3>
+                </div>
                 <button id="del-acc-btn" class="del-btn" style="width: auto !important; padding: 5px 10px !important;">O'CHIRISH</button>
             </div>
             <div id="user-info-box" style="font-size: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: left; margin: 10px 0;"></div>
@@ -320,6 +361,38 @@
     const sndSuccess = new Audio('saqlandi.mp3');
     const sndDelete = new Audio('muvaffaqiyatli.mp3'); 
     const sndError = new Audio('xatolik.mp3');
+
+    let regPhotoBase64 = "";
+
+    // RASMNI TANIASH VA SIQIB O'LCHAMINI KICHIKLASHTIRISH FUNKSIYASI
+    window.previewRegPhoto = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const max_size = 300; // Bazani og'irlashtirmaslik uchun rasm o'lchami optimal 300px qilinadi
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > max_size) { height *= max_size / width; width = max_size; }
+                    } else {
+                        if (height > max_size) { width *= max_size / height; height = max_size; }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    regPhotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    document.getElementById('reg-photo-preview').src = regPhotoBase64;
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     // SURISH ORQALI VERTIKAL SCROLL QILISH
     function enableSwipeToScroll(elementId) {
@@ -477,8 +550,10 @@
         const pass = document.getElementById('reg-pass').value.trim();
         if(!ism || !pass) return showToast("Ma'lumotlar kam!", 'error');
         const id = Math.floor(1000 + Math.random() * 9000);
-        await set(ref(db, 'users/' + ism), { ism, tel, pass, id, role: 'user' });
+        await set(ref(db, 'users/' + ism), { ism, tel, pass, id, photo: regPhotoBase64, role: 'user' });
         showToast("Bajarildi!");
+        regPhotoBase64 = "";
+        document.getElementById('reg-photo-preview').src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
         window.showView('view-auth');
     };
 
@@ -489,6 +564,11 @@
         document.getElementById('prof-id').innerText = "ID: " + user.id;
         document.getElementById('prof-pass').innerText = user.pass;
         document.getElementById('prof-tel-box').innerText = user.tel || "-";
+        if(user.photo) {
+            document.getElementById('prof-avatar-img').src = user.photo;
+        } else {
+            document.getElementById('prof-avatar-img').src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        }
         const isAdmin = user.role === 'admin';
         document.getElementById('admin-tools').classList.toggle('hidden', !isAdmin);
         document.getElementById('check-in-btn').classList.toggle('hidden', isAdmin);
@@ -530,6 +610,7 @@
         if(!snap.exists()) return;
         const targetUser = snap.val();
         document.getElementById('detail-name').innerText = targetUser.ism;
+        document.getElementById('detail-user-img').src = targetUser.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
         const isSelf = userData.ism === targetUser.ism;
         const passToShow = (isAdmin || isSelf) ? targetUser.pass : '****';
         document.getElementById('user-info-box').innerHTML = `
