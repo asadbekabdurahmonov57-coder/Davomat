@@ -261,6 +261,16 @@
     <div id="view-my-attn" class="screen hidden">
         <div class="card">
             <h3 id="t-my-attn-title" style="margin: 0; color: var(--green);">MENING DAVOMATIM</h3>
+            
+            <!-- FOYDALANUVCHILAR UCHUN O'TGAN KUNLARNI QO'SHISH BO'LIMI -->
+            <div style="margin: 10px 0; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px solid var(--glass);">
+                <div style="display: flex; gap: 5px;">
+                    <input type="date" id="manual-date" style="flex: 1; margin: 0; font-size: 12px; padding: 8px;">
+                    <input type="time" id="manual-time" value="08:00" style="flex: 1; margin: 0; font-size: 12px; padding: 8px;">
+                </div>
+                <button id="t-add-attn-btn" class="btn-green" style="margin-top: 8px; padding: 10px; font-size: 12px;" onclick="doManualCheckIn()">KUNNI QO'SHISH</button>
+            </div>
+
             <div class="calendar-grid" id="my-calendar"></div>
             <div id="my-history-list" class="swipe-area" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
             <button id="t-back2" class="btn-blue" onclick="showView('view-main')" style="margin-top: 10px;">ORQAGA</button>
@@ -365,13 +375,15 @@
             authP: "Tizimga kiring", authBtn: "KIRISH", checkIn: "ISHGA KELDIM", back: "ORQAGA", alertIn: "Qayd etildi!", days: ["Du","Se","Ch","Pa","Ju","Sh","Ya"],
             regGo: "RO'YXATDAN O'TISH", regH2: "YANGI HISOB", regBtn: "YARATISH", myAttn: "DAVOMAT BO'LIMI", profGo: "MENING PROFILIM", adminNews: "E'LON QOLDIRISH", adminUsers: "ISHCHILAR DAVOMATI", logout: "CHIQISH",
             myAttnTitle: "MENING DAVOMATIM", profTel: "📞 Tel", profPass: "🔑 Parol", newsH3: "E'LON", save: "SAQLASH", usersH3: "ISHCHILAR", visitH4: "KELGAN VAQTLARI:", del: "O'CHIRISH", newsLabel: "📢 E'LON:",
-            p_user: "Login", p_pass: "Parol", p_name: "Ism sharif", p_phone: "Telefon raqam", toast_err: "Xato!", toast_low: "Ma'lumotlar kam!", toast_done: "Bajarildi!", toast_save: "Saqlandi!", toast_del: "O'chirildi", toast_time: "KELGAN VAQTI:"
+            p_user: "Login", p_pass: "Parol", p_name: "Ism sharif", p_phone: "Telefon raqam", toast_err: "Xato!", toast_low: "Ma'lumotlar kam!", toast_done: "Bajarildi!", toast_save: "Saqlandi!", toast_del: "O'chirildi", toast_time: "KELGAN VAQTI:",
+            addAttnBtn: "KUNNI QO'SHISH"
         },
         cyr: { 
             authP: "Тизимга киринг", authBtn: "КИРИШ", checkIn: "ИШГА КЕЛДИМ", back: "ОРҚАГА", alertIn: "Қайд этилди!", days: ["Ду","Се","Чо","Па","Жу","Ша","Як"],
             regGo: "РЎЙХАТДАН ЎТИШ", regH2: "ЯНГИ ҲИСОБ", regBtn: "ЯРАТИШ", myAttn: "ДАВОМАТ БЎЛИМИ", profGo: "МЕНИНГ ПРОФИЛИМ", adminNews: "ЭЪЛОН ҚОЛДИРИШ", adminUsers: "ИШЧИЛАР ДАВОМАТИ", logout: "ЧИҚИШ",
             myAttnTitle: "МЕНИНГ ДАВОМАТИМ", profTel: "📞 Тел", profPass: "🔑 Парол", newsH3: "ЭЪЛОН", save: "Сақлаш", usersH3: "ИШЧИЛАР", visitH4: "КЕЛГАН ВАҚТЛАРИ:", del: "ЎЧИРИШ", newsLabel: "📢 ЭЪЛОН:",
-            p_user: "Логин", p_pass: "Парол", p_name: "Исм шариф", p_phone: "Телефон рақам", toast_err: "Хато!", toast_low: "Маълумотlar кам!", toast_done: "Бажарилди!", toast_save: "Сақланди!", toast_del: "Ўчирилди", toast_time: "КЕЛГАН ВАҚТИ:"
+            p_user: "Логин", p_pass: "Парол", p_name: "Исм шариф", p_phone: "Телефон рақам", toast_err: "Хато!", toast_low: "Маълумотlar кам!", toast_done: "Бажарилди!", toast_save: "Сақланди!", toast_del: "Ўчирилди", toast_time: "КЕЛГАН ВАҚТИ:",
+            addAttnBtn: "КУННИ ҚЎШИШ"
         }
     };
 
@@ -408,6 +420,7 @@
         document.getElementById('t-logout').innerText = t.logout;
         document.getElementById('t-news-label').innerHTML = t.newsLabel;
         document.getElementById('t-my-attn-title').innerText = t.myAttnTitle;
+        document.getElementById('t-add-attn-btn').innerText = t.addAttnBtn;
         document.getElementById('t-back2').innerText = t.back;
         document.getElementById('t-p-tel').innerText = t.profTel;
         document.getElementById('t-p-pass').innerText = t.profPass;
@@ -625,6 +638,29 @@
             sndSuccess.play(); 
             showToast(translations[currentLang].alertIn);
             if(userData.role !== 'admin') renderCalendar('my-calendar', userData.id);
+        });
+    };
+
+    // FOYDALANUVCHILAR UCHUN O'TGAN KUN DAVOMATINI MANUALLY QO'SHISH FUNKSIYASI
+    window.doManualCheckIn = () => {
+        const dateVal = document.getElementById('manual-date').value;
+        let timeVal = document.getElementById('manual-time').value;
+        if(!dateVal) {
+            showToast("Ma'lumotlar kam!", 'error');
+            return;
+        }
+        if(!timeVal) timeVal = "08:00";
+        push(ref(db, 'history'), {
+            id: userData.id,
+            ism: userData.ism,
+            sana: dateVal,
+            vaqt: timeVal
+        }).then(() => {
+            sndSuccess.play();
+            showToast(translations[currentLang].alertIn);
+            renderCalendar('my-calendar', userData.id);
+            loadMyHistory();
+            document.getElementById('manual-date').value = '';
         });
     };
 
